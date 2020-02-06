@@ -7,7 +7,6 @@ class TodoListHeader extends React.Component {
                 <div className="todoList-newTaskForm">
                     <input type="text" placeholder="New task name"/>
                     <button>Add</button>
-                    <button>1</button>
                 </div>
             </div>
         );
