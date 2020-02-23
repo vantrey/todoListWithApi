@@ -17,18 +17,16 @@ class App extends React.Component {
       {title: 'ReactJS', isDone: false, priority: 'high'},
       {title: 'Patterns', isDone: true, priority: 'low'}
     ],
-
     filterValue: 'Completed'
-
   }
 
   onAddTaskClick = () => {
-    let newText = this.newTaskTitleRef.current.value;
-    let newTask = {
-      title: newText,
-      isDone: false,
-      priority: 'low'
-    }
+      let newText = this.newTaskTitleRef.current.value;
+      let newTask = {
+        title: newText,
+        isDone: false,
+        priority: 'low'
+      }
     /*let newTasks=this.state.tasks.push(newTask) */
     let newTasks = [...this.state.tasks, newTask]
     this.setState({tasks: newTasks})
