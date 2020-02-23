@@ -32,7 +32,7 @@ class App extends React.Component {
     /*let newTasks=this.state.tasks.push(newTask) */
     let newTasks = [...this.state.tasks, newTask]
     this.setState({tasks: newTasks})
-    this.newTaskTitleRef.current.value=''
+    this.newTaskTitleRef.current.value = ''
   }
 
   render = () => {
