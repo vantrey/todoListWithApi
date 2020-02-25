@@ -4,11 +4,11 @@ import propTypes from 'prop-types'
 
 class TodoListTasks extends React.Component {
   render = () => {
-    let tasksElements = this.props.tasks.map((task, index) => {
+    let tasksElements = this.props.tasks.map((t, i) => {
       return (
         <TodoListTask
-          task={task}
-          key={index}
+          task={t}
+          key={i}
           /*title={task.title}
           isDone={task.isDone}
           priority={task.priority}*/

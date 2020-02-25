@@ -5,10 +5,6 @@ import TodoListTasks from "./TodoListTasks";
 import TodoListFooter from "./TodoListFooter";
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.newTaskTitleRef = React.createRef();
-  }
 
   state = {
     tasks: [
@@ -17,20 +13,18 @@ class App extends React.Component {
       {title: 'ReactJS', isDone: false, priority: 'high'},
       {title: 'Patterns', isDone: true, priority: 'low'}
     ],
-    filterValue: 'Completed'
+    filterValue: 'All'
   }
 
-  onAddTaskClick = () => {
-    let newText = this.newTaskTitleRef.current.value;
+  addTask = (newTitleText) => {
     let newTask = {
-      title: newText,
+      title: newTitleText,
       isDone: false,
       priority: 'low'
     }
     /*let newTasks=this.state.tasks.push(newTask) */
     let newTasks = [...this.state.tasks, newTask]
     this.setState({tasks: newTasks})
-    this.newTaskTitleRef.current.value = ''
   }
 
   changeFilter = (newFilterValue) => {
@@ -54,13 +48,13 @@ class App extends React.Component {
     return (
       <div className="App">
         <div className="todoList">
-          <TodoListHeader onAddTaskClick={this.onAddTaskClick} refTitleTask={this.newTaskTitleRef}/>
-          <TodoListTasks changeStatus={this.changeStatus} tasks={this.state.tasks.filter(task => {
+          <TodoListHeader addTask={this.addTask} refTitleTask={this.newTaskTitleRef}/>
+          <TodoListTasks changeStatus={this.changeStatus} tasks={this.state.tasks.filter(t => {
             if (this.state.filterValue === 'Active') {
-              return task.isDone === false
+              return t.isDone === false
             } else if (this.state.filterValue === 'Completed') {
-              return task.isDone === true
-            } else {
+              return t.isDone === true
+            } else if (this.state.filterValue === 'All') {
               return true
             }
           })}/>
