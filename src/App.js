@@ -5,7 +5,6 @@ import TodoListTasks from "./TodoListTasks";
 import TodoListFooter from "./TodoListFooter";
 
 class App extends React.Component {
-
   state = {
     tasks: [
       {title: 'CSS', isDone: true, priority: 'low'},
@@ -16,7 +15,7 @@ class App extends React.Component {
     filterValue: 'All'
   }
 
-  addTask = (newTitleText) => {
+  addTask = (newTitleText) =>{
     let newTask = {
       title: newTitleText,
       isDone: false,
@@ -48,7 +47,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <div className="todoList">
-          <TodoListHeader addTask={this.addTask} refTitleTask={this.newTaskTitleRef}/>
+          <TodoListHeader addTask={this.addTask} />
           <TodoListTasks changeStatus={this.changeStatus} tasks={this.state.tasks.filter(t => {
             if (this.state.filterValue === 'Active') {
               return t.isDone === false
