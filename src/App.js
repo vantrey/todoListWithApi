@@ -50,9 +50,9 @@ class App extends React.Component {
           <TodoListHeader addTask={this.addTask} />
           <TodoListTasks changeStatus={this.changeStatus} tasks={this.state.tasks.filter(t => {
             if (this.state.filterValue === 'Active') {
-              return t.isDone === false
+              return !t.isDone
             } else if (this.state.filterValue === 'Completed') {
-              return t.isDone === true
+              return t.isDone
             } else if (this.state.filterValue === 'All') {
               return true
             }
