@@ -15,6 +15,14 @@
 
 }
 
+.todoList-task.done {
+  opacity: 0.5;
+}
+
 .filter-active {
   background-color: #67fff5;
+}
+
+.error {
+  border-color: red;
 }

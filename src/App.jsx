@@ -15,13 +15,12 @@ class App extends React.Component {
     filterValue: 'All'
   }
 
-  addTask = (newTitleText) =>{
+  addTask = (newTitleText) => {
     let newTask = {
       title: newTitleText,
       isDone: false,
       priority: 'low'
     }
-    /*let newTasks=this.state.tasks.push(newTask) */
     let newTasks = [...this.state.tasks, newTask]
     this.setState({tasks: newTasks})
   }
@@ -47,7 +46,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <div className="todoList">
-          <TodoListHeader addTask={this.addTask} />
+          <TodoListHeader addTask={this.addTask}/>
           <TodoListTasks changeStatus={this.changeStatus} tasks={this.state.tasks.filter(t => {
             if (this.state.filterValue === 'Active') {
               return !t.isDone
