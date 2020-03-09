@@ -51,6 +51,5 @@ class TodoListHeader extends React.Component {
 export default TodoListHeader;
 
 TodoListHeader.propTypes = {
-  refTitleTask: PropTypes.object,
   onAddTaskClick: PropTypes.func,
 }
