@@ -13,7 +13,6 @@ class TodoListFooter extends React.Component {
   onHideFiltersClick = () => {
     this.setState({isHidden: true})
   }
-
   onAllFilterClick = () => {
     this.props.changeFilter('All')
   }
@@ -22,6 +21,9 @@ class TodoListFooter extends React.Component {
   }
   onActiveFilterClick = () => {
     this.props.changeFilter('Active')
+  }
+  onDelClick = () => {
+    this.props.delTask()
   }
 
   render = () => {
@@ -41,6 +43,7 @@ class TodoListFooter extends React.Component {
           <button onClick={this.onActiveFilterClick} className={classForActive}>
             Active
           </button>
+          <button onClick={this.onDelClick}>Delete completed</button>
         </div>
         }
         <div>
