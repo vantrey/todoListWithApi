@@ -8,10 +8,12 @@ class App extends React.Component {
   componentDidMount() {
     this.restoreState()
   }
+
   state = {
     tasks: [],
     filterValue: 'All'
   }
+
   saveState = () => {
     let stareAsString = JSON.stringify(this.state)
     localStorage.setItem('our-state', stareAsString)
