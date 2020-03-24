@@ -1,10 +1,10 @@
 .App {
-
+  display: flex;
+  flex-direction: row;
 }
 
 .todoList {
-  width: 500px;
-  margin: 0 auto;
+  width: 300px;
 }
 
 .todoList > div {
