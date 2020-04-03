@@ -3,17 +3,18 @@ import './App.css';
 import TodoList from "./TodoList"
 import AddNewItemForm from "./AddNewItemForm"
 import {repository} from "./repository"
+import {connect} from "react-redux"
 
 class App extends React.Component {
   componentDidMount() {
     this.restoreState()
   }
 
-  state = {
-    todoLists: [
-      {title: 'What to learn', id: 0},
-    ]
-  }
+  /*  state = {
+      todoLists: [
+        {title: 'What to learn', id: 0},
+      ]
+    }*/
 
   saveState = () => {
     repository.saveTodoLists(this.state)
@@ -24,22 +25,30 @@ class App extends React.Component {
   }
 
   addTodoList = (newTitleText) => {
-    let lastIndex = this.state.todoLists.length - 1
+    debugger
+    let nextIndex
+    this.props.todoLists.length > 0 ?
+      nextIndex = this.props.todoLists.length :
+      nextIndex = 0
     let newTodoList = {
       title: newTitleText,
-      id: lastIndex + 1
+      id: nextIndex,
+      tasks: []
     }
-    let newTodoLists = [...this.state.todoLists, newTodoList]
-    this.setState({todoLists: newTodoLists}, () => {
+
+    /*let newTodoLists = [...this.props.todoLists, newTodoList]*/
+    /*this.setState({todoLists: newTodoLists}, () => {
       this.saveState()
-    })
+    })*/
+    this.props.addTodoList(newTodoList)
   }
 
   render = () => {
-    const todoLists = this.state.todoLists.map((tl, i) => <TodoList
+    const todoLists = this.props.todoLists.map((tl, i) => <TodoList
       key={i}
       id={tl.id}
       title={tl.title}
+      tasks={tl.tasks}
     />)
     return (
       <div>
@@ -54,5 +63,24 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    todoLists: state.todoLists
+  }
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addTodoList: (newTodoList) => {
+      debugger
+      const action = {
+        type: 'ADD_TODO_LIST',
+        newTodoList: newTodoList,
+      }
+      dispatch(action)
+    }
+  }
+}
+const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
+export default ConnectedApp
+
 
