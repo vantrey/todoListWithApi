@@ -1,4 +1,5 @@
 import {createStore} from "redux"
+import {repository} from "./repository"
 
 const initialState = {
   todoLists: [
@@ -8,19 +9,25 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'ADD_TODO_LIST':
-      return {
+    case 'ADD_TODO_LIST': {
+      let newState = {
         ...state,
         todoLists: [...state.todoLists, action.newTodoList]
       }
-    case 'DEL_TODO_LIST':
-      return {
+      repository.saveTodoLists(newState)
+      return newState
+    }
+    case 'DEL_TODO_LIST': {
+      let newState = {
         ...state, todoLists: state.todoLists.filter(todo => {
           return action.todoListId !== todo.id
         })
       }
-    case 'ADD_TASK':
-      return {
+      repository.saveTodoLists(newState)
+      return newState
+    }
+    case 'ADD_TASK': {
+      let newState = {
         ...state, todoLists: state.todoLists.map(todo => {
           if (todo.id === action.todoListId) {
             return {...todo, tasks: [...todo.tasks, action.newTask]}
@@ -29,8 +36,11 @@ const reducer = (state = initialState, action) => {
           }
         })
       }
-    case 'CHANGE_TASK':
-      return {
+      repository.saveTodoLists(newState)
+      return newState
+    }
+    case 'CHANGE_TASK': {
+      let newState = {
         ...state,
         todoLists: state.todoLists.map(todo => {
           if (todo.id === action.todoListId) {
@@ -44,15 +54,27 @@ const reducer = (state = initialState, action) => {
           } else return todo
         })
       }
-    case 'DEL_TASK':
-      return {
+      repository.saveTodoLists(newState)
+      return newState
+    }
+    case 'DEL_TASK': {
+      let newState = {
         ...state,
         todoLists: state.todoLists.map(todo => {
           if (todo.id === action.todoListId) {
-            return {...todo, tasks: todo.tasks.filter (t => action.taskId !== t.id)}
+            return {...todo, tasks: todo.tasks.filter(t => action.taskId !== t.id)}
           } else return todo
         })
       }
+      repository.saveTodoLists(newState)
+      return newState
+    }
+    case 'RESTORE_STATE': {
+      let restoredState = repository.getTodoLists()
+      if (restoredState != null) {
+        return restoredState
+      } else return state
+    }
   }
   return state
 }

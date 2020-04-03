@@ -37,7 +37,7 @@ class TodoListTask extends React.Component {
           </span>}
         <Button id={this.props.task.id} f={this.props.delTask} btnName={`X`}/>
       </div>
-    );
+    )
   }
 }
 

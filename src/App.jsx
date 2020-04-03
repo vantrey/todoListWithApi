@@ -7,7 +7,7 @@ import {connect} from "react-redux"
 
 class App extends React.Component {
   componentDidMount() {
-    this.restoreState()
+    this.props.restoreState()
   }
 
   /*  state = {
@@ -16,13 +16,13 @@ class App extends React.Component {
       ]
     }*/
 
-  saveState = () => {
+/*  saveState = () => {
     repository.saveTodoLists(this.state)
   }
   restoreState = () => {
     let state = repository.getTodoLists()
     if (state != null) this.setState(state)
-  }
+  }*/
 
   addTodoList = (newTitleText) => {
     let nextIndex
@@ -34,21 +34,17 @@ class App extends React.Component {
       id: nextIndex,
       tasks: []
     }
-
-    /*let newTodoLists = [...this.props.todoLists, newTodoList]*/
-    /*this.setState({todoLists: newTodoLists}, () => {
-      this.saveState()
-    })*/
     this.props.addTodoList(newTodoList)
   }
+
   delTodoList = (todoListId) => {
-    this.props.delTodoList (todoListId)
+    this.props.delTodoList(todoListId)
   }
 
   render = () => {
     const todoLists = this.props.todoLists.map((tl, i) => <TodoList
       key={i}
-      id={tl.id}
+      todoListId={tl.id}
       title={tl.title}
       tasks={tl.tasks}
       delTodoList={this.props.delTodoList}
@@ -83,7 +79,13 @@ const mapDispatchToProps = (dispatch) => {
     delTodoList: (todoListId) => {
       const action = {
         type: 'DEL_TODO_LIST',
-        todoListId:todoListId,
+        todoListId: todoListId,
+      }
+      dispatch(action)
+    },
+    restoreState: () => {
+      const action = {
+        type: 'RESTORE_STATE',
       }
       dispatch(action)
     }

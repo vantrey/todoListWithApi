@@ -13,7 +13,6 @@ class TodoList extends React.Component {
     }*/
 
   state = {
-    tasks: [],
     filterValue: 'All'
   }
 
@@ -23,7 +22,6 @@ class TodoList extends React.Component {
   }
   restoreState = () => {
     let state = {
-      tasks: [],
       filterValue: 'All'
     }
     let stateAsString = localStorage.getItem('our-state-' + this.props.id)
@@ -42,15 +40,18 @@ class TodoList extends React.Component {
   nextTaskId = 0
 
   addTask = (newTitleText) => {
+    let nextId = this.props.tasks.length
+    if (nextId < 1) nextId = 0
+
     let newTask = {
-      id: this.nextTaskId,
+      id: nextId,
       title: newTitleText,
       isDone: false,
       priority: 'low'
     }
     this.nextTaskId++
     /*let newTasks = [...this.state.tasks, newTask]*/
-    this.props.addTask(newTask, this.props.id)
+    this.props.addTask(newTask, this.props.todoListId)
     /*this.setState({tasks: newTasks}, () => {
       this.saveState()
     })*/
@@ -67,7 +68,7 @@ class TodoList extends React.Component {
     })
   }
   delTask = (taskId) => {
-    this.props.delTask(taskId, this.props.id)
+    this.props.delTask(taskId, this.props.todoListId)
   }
   changeStatus = (taskId, isDone) => {
     this.changeTask(taskId, {isDone: isDone})
@@ -83,7 +84,7 @@ class TodoList extends React.Component {
         return t
       }
     })*/
-    this.props.changeTask(taskId, obj, this.props.id)
+    this.props.changeTask(taskId, obj, this.props.todoListId)
     /*this.setState({tasks: newTask}, () => {
       this.saveState()
     })*/
@@ -94,7 +95,7 @@ class TodoList extends React.Component {
       <div className="App">
         <div className="todoList">
           <TodoListTitle title={this.props.title}/>
-          <Button id={this.props.id} f={this.props.delTodoList} btnName={`X`}/>
+          <Button id={this.props.todoListId} f={this.props.delTodoList} btnName={`X`}/>
           <AddNewItemForm addItem={this.addTask}/>
           <TodoListTasks
             delTask={this.delTask}
