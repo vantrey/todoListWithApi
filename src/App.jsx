@@ -25,7 +25,6 @@ class App extends React.Component {
   }
 
   addTodoList = (newTitleText) => {
-    debugger
     let nextIndex
     this.props.todoLists.length > 0 ?
       nextIndex = this.props.todoLists.length :
@@ -42,6 +41,9 @@ class App extends React.Component {
     })*/
     this.props.addTodoList(newTodoList)
   }
+  delTodoList = (todoListId) => {
+    this.props.delTodoList (todoListId)
+  }
 
   render = () => {
     const todoLists = this.props.todoLists.map((tl, i) => <TodoList
@@ -49,6 +51,7 @@ class App extends React.Component {
       id={tl.id}
       title={tl.title}
       tasks={tl.tasks}
+      delTodoList={this.props.delTodoList}
     />)
     return (
       <div>
@@ -71,10 +74,16 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     addTodoList: (newTodoList) => {
-      debugger
       const action = {
         type: 'ADD_TODO_LIST',
         newTodoList: newTodoList,
+      }
+      dispatch(action)
+    },
+    delTodoList: (todoListId) => {
+      const action = {
+        type: 'DEL_TODO_LIST',
+        todoListId:todoListId,
       }
       dispatch(action)
     }

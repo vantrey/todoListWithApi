@@ -1,0 +1,10 @@
+.button
+{
+    font-family: fantasy;  font-size: large;
+
+    width: 30px; height: 30px;
+
+    letter-spacing: .05em;
+
+    border-radius: 5px;
+}

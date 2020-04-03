@@ -5,11 +5,12 @@ import TodoListTasks from "./TodoListTasks";
 import TodoListFooter from "./TodoListFooter";
 import TodoListTitle from "./TodoListTitle"
 import {connect} from "react-redux"
+import Button from "./Button/Button"
 
 class TodoList extends React.Component {
-/*  componentDidMount() {
-    this.restoreState()
-  }*/
+  /*  componentDidMount() {
+      this.restoreState()
+    }*/
 
   state = {
     tasks: [],
@@ -59,11 +60,14 @@ class TodoList extends React.Component {
       this.saveState()
     })
   }
-  delTask = () => {
+  delSelectedTask = () => {
     let newTasks = this.state.tasks.filter(t => !t.isDone)
     this.setState({tasks: newTasks}, () => {
       this.saveState()
     })
+  }
+  delTask = (taskId) => {
+    this.props.delTask(taskId, this.props.id)
   }
   changeStatus = (taskId, isDone) => {
     this.changeTask(taskId, {isDone: isDone})
@@ -90,8 +94,10 @@ class TodoList extends React.Component {
       <div className="App">
         <div className="todoList">
           <TodoListTitle title={this.props.title}/>
+          <Button id={this.props.id} f={this.props.delTodoList} btnName={`X`}/>
           <AddNewItemForm addItem={this.addTask}/>
           <TodoListTasks
+            delTask={this.delTask}
             changeTaskTitle={this.changeTaskTitle}
             changeStatus={this.changeStatus}
             tasks={this.props.tasks.filter(t => {
@@ -104,7 +110,7 @@ class TodoList extends React.Component {
               }
             })}/>
           <TodoListFooter
-            delTask={this.delTask}
+            delSelectedTask={this.delSelectedTask}
             changeFilter={this.changeFilter}
             filterValue={this.state.filterValue}
           />
@@ -132,6 +138,14 @@ const mapDispatchToProps = (dispatch) => {
         type: 'CHANGE_TASK',
         taskId: taskId,
         obj: obj,
+        todoListId: todoListId
+      }
+      dispatch(action)
+    },
+    delTask: (taskId, todoListId) => {
+      const action = {
+        type: 'DEL_TASK',
+        taskId: taskId,
         todoListId: todoListId
       }
       dispatch(action)

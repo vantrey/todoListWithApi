@@ -1,5 +1,6 @@
 import React from 'react';
 import PropType from 'prop-types';
+import Button from "./Button/Button"
 
 class TodoListTask extends React.Component {
   state = {
@@ -31,9 +32,10 @@ class TodoListTask extends React.Component {
             onBlur={this.deactivateEditMod}
             onChange={this.onTitleChanged}
           />
-          : < span onClick={this.activateEditMode}>
+          : <span onClick={this.activateEditMode}>
         {this.props.task.id} - {this.props.task.title} - priority: {this.props.task.priority}
           </span>}
+        <Button id={this.props.task.id} f={this.props.delTask} btnName={`X`}/>
       </div>
     );
   }

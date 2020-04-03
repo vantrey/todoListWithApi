@@ -7,17 +7,18 @@ const initialState = {
 }
 
 const reducer = (state = initialState, action) => {
-  debugger
   switch (action.type) {
     case 'ADD_TODO_LIST':
-      debugger
-      let ns = {
+      return {
         ...state,
         todoLists: [...state.todoLists, action.newTodoList]
       }
-      debugger
-      return ns
-
+    case 'DEL_TODO_LIST':
+      return {
+        ...state, todoLists: state.todoLists.filter(todo => {
+          return action.todoListId !== todo.id
+        })
+      }
     case 'ADD_TASK':
       return {
         ...state, todoLists: state.todoLists.map(todo => {
@@ -43,10 +44,19 @@ const reducer = (state = initialState, action) => {
           } else return todo
         })
       }
+    case 'DEL_TASK':
+      return {
+        ...state,
+        todoLists: state.todoLists.map(todo => {
+          if (todo.id === action.todoListId) {
+            return {...todo, tasks: todo.tasks.filter (t => action.taskId !== t.id)}
+          } else return todo
+        })
+      }
   }
   return state
 }
 
 const store = createStore(reducer)
-
+window.store = store
 export default store
