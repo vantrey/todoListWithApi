@@ -11,9 +11,6 @@ class TodoListTasks extends React.Component {
           changeTaskTitle={this.props.changeTaskTitle}
           task={t}
           key={i}
-          /*title={task.title}
-          isDone={task.isDone}
-          priority={task.priority}*/
           changeStatus={this.props.changeStatus}
         />
       )

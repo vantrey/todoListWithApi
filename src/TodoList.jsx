@@ -16,7 +16,7 @@ class TodoList extends React.Component {
     filterValue: 'All'
   }
 
-  saveState = () => {
+  /*saveState = () => {
     let stareAsString = JSON.stringify(this.state)
     localStorage.setItem('our-state-' + this.props.id, stareAsString)
   }
@@ -36,13 +36,12 @@ class TodoList extends React.Component {
     this.setState(state, () => {
       this.saveState()
     })
-  }
+  }*/
   nextTaskId = 0
 
   addTask = (newTitleText) => {
     let nextId = this.props.tasks.length
     if (nextId < 1) nextId = 0
-
     let newTask = {
       id: nextId,
       title: newTitleText,
@@ -62,10 +61,11 @@ class TodoList extends React.Component {
     })
   }
   delSelectedTask = () => {
-    let newTasks = this.state.tasks.filter(t => !t.isDone)
+    /*let newTasks = this.state.tasks.filter(t => !t.isDone)
     this.setState({tasks: newTasks}, () => {
       this.saveState()
-    })
+    })*/
+    this.props.delSelectedTask(this.props.todoListId)
   }
   delTask = (taskId) => {
     this.props.delTask(taskId, this.props.todoListId)
@@ -147,6 +147,13 @@ const mapDispatchToProps = (dispatch) => {
       const action = {
         type: 'DEL_TASK',
         taskId: taskId,
+        todoListId: todoListId
+      }
+      dispatch(action)
+    },
+    delSelectedTask: (todoListId) => {
+      const action = {
+        type: 'DEL_SELECTED_TASK',
         todoListId: todoListId
       }
       dispatch(action)

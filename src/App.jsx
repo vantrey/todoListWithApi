@@ -25,13 +25,13 @@ class App extends React.Component {
   }*/
 
   addTodoList = (newTitleText) => {
-    let nextIndex
+   /* let nextIndex
     this.props.todoLists.length > 0 ?
       nextIndex = this.props.todoLists.length :
-      nextIndex = 0
+      nextIndex = 0*/
     let newTodoList = {
       title: newTitleText,
-      id: nextIndex,
+      id: this.props.nextTodoListId,
       tasks: []
     }
     this.props.addTodoList(newTodoList)
@@ -64,7 +64,8 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    todoLists: state.todoLists
+    todoLists: state.todoLists,
+    nextTodoListId: state.nextTodoListId
   }
 }
 const mapDispatchToProps = (dispatch) => {
