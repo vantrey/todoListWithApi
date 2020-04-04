@@ -7,16 +7,28 @@
   width: 300px;
 }
 
+.todoListTitleWrap {
+  display: flex;
+}
+
+.TodoListDelBtn {
+  padding: 18px 0 0 5px;
+}
+
 .todoList > div {
   padding: 10px;
 }
 
 .todoList-task {
-
+display: flex;
 }
 
 .todoList-task.done {
   opacity: 0.5;
+}
+
+.taskDelBtn {
+  padding-left: 5px;
 }
 
 .filter-active {

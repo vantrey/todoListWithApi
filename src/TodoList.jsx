@@ -93,8 +93,12 @@ class TodoList extends React.Component {
     return (
       <div className="App">
         <div className="todoList">
-          <TodoListTitle title={this.props.title}/>
-          <Button id={this.props.todoListId} f={this.props.delTodoList} btnName={`X`}/>
+          <div className='todoListTitleWrap'>
+            <TodoListTitle title={this.props.title}/>
+            <div className="TodoListDelBtn">
+              <Button id={this.props.todoListId} f={this.props.delTodoList} btnName={`X`}/>
+            </div>
+          </div>
           <AddNewItemForm addItem={this.addTask}/>
           <TodoListTasks
             delTask={this.delTask}
