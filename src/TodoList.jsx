@@ -37,13 +37,13 @@ class TodoList extends React.Component {
       this.saveState()
     })
   }*/
-  nextTaskId = 0
+  /*nextTaskId = 0*/
 
   addTask = (newTitleText) => {
-    let nextId = this.props.tasks.length
-    if (nextId < 1) nextId = 0
+    /*let nextId = this.props.tasks.length
+    if (nextId < 1) nextId = 0*/
     let newTask = {
-      id: nextId,
+      id: this.props.nextTaskId,
       title: newTitleText,
       isDone: false,
       priority: 'low'
@@ -57,7 +57,6 @@ class TodoList extends React.Component {
   }
   changeFilter = (newFilterValue) => {
     this.setState({filterValue: newFilterValue}, () => {
-      this.saveState()
     })
   }
   delSelectedTask = () => {

@@ -32,7 +32,8 @@ class App extends React.Component {
     let newTodoList = {
       title: newTitleText,
       id: this.props.nextTodoListId,
-      tasks: []
+      tasks: [],
+      nextTaskId: 0,
     }
     this.props.addTodoList(newTodoList)
   }
@@ -44,6 +45,7 @@ class App extends React.Component {
   render = () => {
     const todoLists = this.props.todoLists.map((tl, i) => <TodoList
       key={i}
+      nextTaskId={tl.nextTaskId}
       todoListId={tl.id}
       title={tl.title}
       tasks={tl.tasks}

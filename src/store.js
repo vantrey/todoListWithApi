@@ -3,10 +3,9 @@ import {repository} from "./repository"
 
 const initialState = {
   todoLists: [
-    {title: 'What to learn', id: 0, tasks: []},
+    {title: 'What to learn', id: 0, tasks: [], nextTaskId: 0,},
   ],
-  nextTodoListId: 0,
-  nextTaskId: 0,
+  nextTodoListId: 1,
 }
 
 const reducer = (state = initialState, action) => {
@@ -33,7 +32,7 @@ const reducer = (state = initialState, action) => {
       let newState = {
         ...state, todoLists: state.todoLists.map(todo => {
           if (todo.id === action.todoListId) {
-            return {...todo, tasks: [...todo.tasks, action.newTask]}
+            return {...todo, tasks: [...todo.tasks, action.newTask], nextTaskId: todo.nextTaskId +1}
           } else {
             return todo
           }
