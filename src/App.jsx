@@ -2,33 +2,15 @@ import React from 'react';
 import './App.css';
 import TodoList from "./TodoList"
 import AddNewItemForm from "./AddNewItemForm"
-import {repository} from "./repository"
 import {connect} from "react-redux"
+import {addTodoListAC, delTodoListAC, restoreStateAC} from "./reduser"
 
 class App extends React.Component {
   componentDidMount() {
     this.props.restoreState()
   }
 
-  /*  state = {
-      todoLists: [
-        {title: 'What to learn', id: 0},
-      ]
-    }*/
-
-/*  saveState = () => {
-    repository.saveTodoLists(this.state)
-  }
-  restoreState = () => {
-    let state = repository.getTodoLists()
-    if (state != null) this.setState(state)
-  }*/
-
   addTodoList = (newTitleText) => {
-   /* let nextIndex
-    this.props.todoLists.length > 0 ?
-      nextIndex = this.props.todoLists.length :
-      nextIndex = 0*/
     let newTodoList = {
       title: newTitleText,
       id: this.props.nextTodoListId,
@@ -73,24 +55,14 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     addTodoList: (newTodoList) => {
-      const action = {
-        type: 'ADD_TODO_LIST',
-        newTodoList: newTodoList,
-      }
+      const action = addTodoListAC (newTodoList)
       dispatch(action)
     },
     delTodoList: (todoListId) => {
-      const action = {
-        type: 'DEL_TODO_LIST',
-        todoListId: todoListId,
-      }
-      dispatch(action)
+      dispatch(delTodoListAC(todoListId))
     },
     restoreState: () => {
-      const action = {
-        type: 'RESTORE_STATE',
-      }
-      dispatch(action)
+      dispatch(restoreStateAC())
     }
   }
 }
