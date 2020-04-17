@@ -6,111 +6,113 @@ import TodoListFooter from "./TodoListFooter";
 import TodoListTitle from "./TodoListTitle"
 import {connect} from "react-redux"
 import Button from "./Button/Button"
+import axios from 'axios'
 import {
   addTaskAC,
   changeTaskAC,
   delSelectedTaskAC,
-  delTaskAC
+  delTaskAC, setTasks
 } from "./reduser"
 
+
 class TodoList extends React.Component {
-  /*  componentDidMount() {
-      this.restoreState()
-    }*/
+
+  componentDidMount() {
+    this.restoreState()
+  }
 
   state = {
     filterValue: 'All'
   }
 
-  /*saveState = () => {
-    let stareAsString = JSON.stringify(this.state)
-    localStorage.setItem('our-state-' + this.props.id, stareAsString)
-  }
   restoreState = () => {
-    let state = {
-      filterValue: 'All'
-    }
-    let stateAsString = localStorage.getItem('our-state-' + this.props.id)
-    if (stateAsString != null) {
-      state = JSON.parse(stateAsString)
-      state.tasks.forEach(t => {
-        if (t.id >= this.nextTaskId) {
-          this.nextTaskId = t.id + 1
-        }
+    axios.get(`https://social-network.samuraijs.com/api/1.1/todo-lists/${this.props.todoListId}/tasks`,
+      {
+        withCredentials: true,
+        headers: {'API-KEY': 'bf825c9a-985b-4152-9f7d-ce82a9632e5e'}
       })
-    }
-    this.setState(state, () => {
-      this.saveState()
-    })
-  }*/
-  /*nextTaskId = 0*/
+      .then(res => {
+        this.props.setTasks(res.data.items, this.props.todoListId)
+      })
+  }
 
   addTask = (newTitleText) => {
-    /*let nextId = this.props.tasks.length
-    if (nextId < 1) nextId = 0*/
-    let newTask = {
-      id: this.props.nextTaskId,
-      title: newTitleText,
-      isDone: false,
-      priority: 'low'
-    }
-    this.nextTaskId++
-    /*let newTasks = [...this.state.tasks, newTask]*/
-    this.props.addTask(newTask, this.props.todoListId)
-    /*this.setState({tasks: newTasks}, () => {
-      this.saveState()
-    })*/
+    axios.post(
+      `https://social-network.samuraijs.com/api/1.1/todo-lists/${this.props.todoListId}/tasks`,
+      {title: newTitleText},
+      {
+        withCredentials: true,
+        headers: {'API-KEY': 'bf825c9a-985b-4152-9f7d-ce82a9632e5e'}
+      }
+    )
+      .then(res => {
+        if (res.data.resultCode === 0) {
+          let task = res.data.data.item
+          this.props.addTask(task, this.props.todoListId)
+        }
+      })
   }
   changeFilter = (newFilterValue) => {
     this.setState({filterValue: newFilterValue}, () => {
     })
   }
   delSelectedTask = () => {
-    /*let newTasks = this.state.tasks.filter(t => !t.isDone)
-    this.setState({tasks: newTasks}, () => {
-      this.saveState()
-    })*/
     this.props.delSelectedTask(this.props.todoListId)
   }
+
   delTask = (taskId) => {
-    this.props.delTask(taskId, this.props.todoListId)
-  }
-  changeStatus = (taskId, isDone) => {
-    this.changeTask(taskId, {isDone: isDone})
-  }
-  changeTaskTitle = (taskId, title) => {
-    this.changeTask(taskId, {title: title})
-  }
-  changeTask = (taskId, obj) => {
-    /*let newTask = this.props.tasks.map(t => {
-      if (t.id === taskId) {
-        return {...t, ...obj}
-      } else {
-        return t
+    axios.delete(
+      `https://social-network.samuraijs.com/api/1.1/todo-lists/${this.props.todoListId}/tasks/${taskId}`,
+      {
+        withCredentials: true,
+        headers: {'API-KEY': 'bf825c9a-985b-4152-9f7d-ce82a9632e5e'}
       }
-    })*/
-    this.props.changeTask(taskId, obj, this.props.todoListId)
-    /*this.setState({tasks: newTask}, () => {
-      this.saveState()
-    })*/
+    ).then(res => {
+      if (res.data.resultCode === 0) {
+        this.props.delTask(taskId, this.props.todoListId)
+      }
+    })
+      .catch((error) => console.log(error))
+  }
+  changeStatus = (task, status) => {
+    this.changeTask(task, {status: status})
+  }
+  changeTaskTitle = (task, title) => {
+    this.changeTask(task, {title: title})
+  }
+  changeTask = (task, obj) => {
+        axios.put(
+      `https://social-network.samuraijs.com/api/1.1/todo-lists/${this.props.todoListId}/tasks/${task.id}`,
+      {...task, ...obj},
+      {
+        withCredentials: true,
+        headers: {'API-KEY': 'bf825c9a-985b-4152-9f7d-ce82a9632e5e'}
+      }
+    )
+      .then(res => {
+        if (res.data.resultCode === 0) {
+          this.props.changeTask(res.data.data.item, this.props.todoListId)
+        }
+      })
   }
 
   render = () => {
+    let {tasks = []} = this.props
     return (
       <div className="App">
         <div className="todoList">
           <div className='todoListTitleWrap'>
             <TodoListTitle title={this.props.title}/>
             <div className="TodoListDelBtn">
-              <Button id={this.props.todoListId} f={this.props.delTodoList} btnName={`X`}/>
-            </div>
+            <Button id={this.props.todoListId} f={this.props.delTodoList} btnName={`X`}/>
           </div>
-          <AddNewItemForm addItem={this.addTask}/>
-          <TodoListTasks
+        </div>
+        <AddNewItemForm addItem={this.addTask}/>
+        <TodoListTasks
             delTask={this.delTask}
             changeTaskTitle={this.changeTaskTitle}
             changeStatus={this.changeStatus}
-            tasks={this.props.tasks.filter(t => {
+            tasks={tasks.filter(t => {
               if (this.state.filterValue === 'Active') {
                 return !t.isDone
               } else if (this.state.filterValue === 'Completed') {
@@ -138,14 +140,17 @@ const mapDispatchToProps = (dispatch) => {
     addTask: (newTask, todoListId) => {
       dispatch(addTaskAC(newTask, todoListId))
     },
-    changeTask: (taskId, obj, todoListId) => {
-      dispatch(changeTaskAC(taskId, obj, todoListId))
+    changeTask: (task, todoListId) => {
+      dispatch(changeTaskAC(task, todoListId))
     },
     delTask: (taskId, todoListId) => {
       dispatch(delTaskAC(taskId, todoListId))
     },
     delSelectedTask: (todoListId) => {
-      dispatch(delSelectedTaskAC (todoListId))
+      dispatch(delSelectedTaskAC(todoListId))
+    },
+    setTasks: (tasks, todoListId) => {
+      dispatch(setTasks(tasks, todoListId))
     }
   }
 }

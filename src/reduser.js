@@ -7,11 +7,11 @@ const CHANGE_TASK = 'TodoList/Reducer/CHANGE_TASK'
 const DEL_TASK = 'TodoList/Reducer/DEL_TASK'
 const DEL_SELECTED_TASK = 'TodoList/Reducer/DEL_SELECTED_TASK'
 const RESTORE_STATE = 'TodoList/Reducer/RESTORE_STATE'
+const SET_TUDO_LISTS = 'TodoList/Reducer/SET_TUDO_LISTS'
+const SET_TASKS = 'TodoList/Reducer/SET_TASKS'
 
 const initialState = {
-  todoLists: [
-    {title: 'What to learn', id: 0, tasks: [], nextTaskId: 0,},
-  ],
+  todoLists: [],
   nextTodoListId: 1,
 }
 
@@ -23,7 +23,7 @@ const reducer = (state = initialState, action) => {
         todoLists: [...state.todoLists, action.newTodoList],
         nextTodoListId: state.nextTodoListId + 1
       }
-      repository.saveTodoLists(newState)
+      // repository.saveTodoLists(newState)
       return newState
     }
     case DEL_TODO_LIST: {
@@ -32,20 +32,20 @@ const reducer = (state = initialState, action) => {
           return action.todoListId !== todo.id
         })
       }
-      repository.saveTodoLists(newState)
+      // repository.saveTodoLists(newState)
       return newState
     }
     case ADD_TASK: {
       let newState = {
         ...state, todoLists: state.todoLists.map(todo => {
           if (todo.id === action.todoListId) {
-            return {...todo, tasks: [...todo.tasks, action.newTask], nextTaskId: todo.nextTaskId + 1}
+            return {...todo, tasks: [...todo.tasks, action.newTask]}
           } else {
             return todo
           }
         })
       }
-      repository.saveTodoLists(newState)
+      // repository.saveTodoLists(newState)
       return newState
     }
     case CHANGE_TASK: {
@@ -55,15 +55,15 @@ const reducer = (state = initialState, action) => {
           if (todo.id === action.todoListId) {
             return {
               ...todo, tasks: todo.tasks.map(t => {
-                if (t.id === action.taskId) {
-                  return {...t, ...action.obj}
+                if (t.id === action.task.id) {
+                  return action.task
                 } else return t
               })
             }
           } else return todo
         })
       }
-      repository.saveTodoLists(newState)
+      // repository.saveTodoLists(newState)
       return newState
     }
     case DEL_TASK: {
@@ -75,7 +75,7 @@ const reducer = (state = initialState, action) => {
           } else return todo
         })
       }
-      repository.saveTodoLists(newState)
+      // repository.saveTodoLists(newState)
       return newState
     }
     case DEL_SELECTED_TASK: {
@@ -87,50 +87,45 @@ const reducer = (state = initialState, action) => {
           } else return todo
         })
       }
-      repository.saveTodoLists(newState)
+      // repository.saveTodoLists(newState)
       return newState
     }
-    case RESTORE_STATE: {
+    /*case RESTORE_STATE: {
       let restoredState = repository.getTodoLists()
       if (restoredState != null) {
         return restoredState
       } else return state
+    }*/
+    case SET_TUDO_LISTS: {
+      return {
+        ...state,
+        todoLists: action.todoLists.map(todo => ({...todo, tasks: []}))
+      }
     }
+    case SET_TASKS:
+      return {
+        ...state,
+        todoLists: state.todoLists.map(todo => {
+          if (todo.id === action.todoListId) {
+            return { ...todo, tasks: action.tasks}
+          } else return todo
+        })
+      }
+
+    default:
+      return state
   }
-  return state
 }
 
-export const addTodoListAC = (newTodoList) => ({
-  type: ADD_TODO_LIST,
-  newTodoList, // newTodoList: newTodoList
-})
-export const delTodoListAC = (todoListId) => ({
-  type: DEL_TODO_LIST,
-  todoListId, // todoListId: todoListId
-})
-export const restoreStateAC = () => ({
-  type: RESTORE_STATE,
-})
+export const addTodoListAC = (newTodoList) => ({type: ADD_TODO_LIST, newTodoList})
+export const delTodoListAC = (todoListId) => ({type: DEL_TODO_LIST, todoListId})
+// export const restoreStateAC = () => ({type: RESTORE_STATE})
 
-export const addTaskAC = (newTask, todoListId) => ({
-  type: ADD_TASK,
-  newTask,
-  todoListId
-})
-export const changeTaskAC = (taskId, obj, todoListId) => ({
-  type: CHANGE_TASK,
-  taskId,
-  obj,
-  todoListId
-})
-export const delTaskAC = (taskId, todoListId) => ({
-  type: DEL_TASK,
-  taskId,
-  todoListId
-})
-export const delSelectedTaskAC = (todoListId) => ({
-  type: DEL_SELECTED_TASK,
-  todoListId
-})
+export const addTaskAC = (newTask, todoListId) => ({type: ADD_TASK, newTask, todoListId})
+export const changeTaskAC = (task, todoListId) => ({type: CHANGE_TASK, task, todoListId})
+export const delTaskAC = (taskId, todoListId) => ({type: DEL_TASK, taskId, todoListId})
+export const delSelectedTaskAC = (todoListId) => ({type: DEL_SELECTED_TASK, todoListId})
+export const setTodoLists = (todoLists) => ({type: SET_TUDO_LISTS, todoLists})
+export const setTasks = (tasks, todoListId) => ({type: SET_TASKS, tasks, todoListId})
 
 export default reducer
