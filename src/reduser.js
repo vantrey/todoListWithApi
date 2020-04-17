@@ -83,7 +83,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         todoLists: state.todoLists.map(todo => {
           if (todo.id === action.todoListId) {
-            return {...todo, tasks: todo.tasks.filter(t => !t.isDone)}
+            return {...todo, tasks: todo.tasks.filter(t => t.status === 0)}
           } else return todo
         })
       }
