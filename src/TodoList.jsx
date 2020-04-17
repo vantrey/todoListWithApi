@@ -7,12 +7,7 @@ import TodoListTitle from "./TodoListTitle"
 import {connect} from "react-redux"
 import Button from "./Button/Button"
 import axios from 'axios'
-import {
-  addTaskAC,
-  changeTaskAC,
-  delSelectedTaskAC,
-  delTaskAC, setTasks
-} from "./reduser"
+import {addTaskAC, changeTaskAC, delSelectedTaskAC, delTaskAC, setLoading, setTasks} from "./reduser"
 
 
 class TodoList extends React.Component {
@@ -57,7 +52,20 @@ class TodoList extends React.Component {
     })
   }
   delSelectedTask = () => {
-    this.props.delSelectedTask(this.props.todoListId)
+    this.props.setLoading(true)
+    let delTasksFromServer = (id) => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          this.delTask(id)
+          resolve()
+        }, 2000)
+      })
+    }
+    this.props.tasks.forEach(t => {
+      if (t.status === 2) {
+        delTasksFromServer(t.id).then(()=> this.props.setLoading(false))
+      }
+    })
   }
 
   delTask = (taskId) => {
@@ -81,7 +89,7 @@ class TodoList extends React.Component {
     this.changeTask(task, {title: title})
   }
   changeTask = (task, obj) => {
-        axios.put(
+    axios.put(
       `https://social-network.samuraijs.com/api/1.1/todo-lists/${this.props.todoListId}/tasks/${task.id}`,
       {...task, ...obj},
       {
@@ -104,11 +112,11 @@ class TodoList extends React.Component {
           <div className='todoListTitleWrap'>
             <TodoListTitle title={this.props.title}/>
             <div className="TodoListDelBtn">
-            <Button id={this.props.todoListId} f={this.props.delTodoList} btnName={`X`}/>
+              <Button id={this.props.todoListId} f={this.props.delTodoList} btnName={`X`}/>
+            </div>
           </div>
-        </div>
-        <AddNewItemForm addItem={this.addTask}/>
-        <TodoListTasks
+          <AddNewItemForm addItem={this.addTask}/>
+          <TodoListTasks
             delTask={this.delTask}
             changeTaskTitle={this.changeTaskTitle}
             changeStatus={this.changeStatus}
@@ -151,6 +159,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setTasks: (tasks, todoListId) => {
       dispatch(setTasks(tasks, todoListId))
+    },
+    setLoading: (isLoading) => {
+      dispatch(setLoading(isLoading))
     }
   }
 }

@@ -38,3 +38,7 @@ display: flex;
 .error {
   border-color: red;
 }
+
+.showMenu {
+  cursor: pointer;
+}

@@ -9,10 +9,11 @@ const DEL_SELECTED_TASK = 'TodoList/Reducer/DEL_SELECTED_TASK'
 const RESTORE_STATE = 'TodoList/Reducer/RESTORE_STATE'
 const SET_TUDO_LISTS = 'TodoList/Reducer/SET_TUDO_LISTS'
 const SET_TASKS = 'TodoList/Reducer/SET_TASKS'
+const SET_LOADING = 'TodoList/Reducer/SET_LOADING'
 
 const initialState = {
   todoLists: [],
-  nextTodoListId: 1,
+  isLoading: false,
 }
 
 const reducer = (state = initialState, action) => {
@@ -21,7 +22,6 @@ const reducer = (state = initialState, action) => {
       let newState = {
         ...state,
         todoLists: [...state.todoLists, action.newTodoList],
-        nextTodoListId: state.nextTodoListId + 1
       }
       // repository.saveTodoLists(newState)
       return newState
@@ -111,7 +111,11 @@ const reducer = (state = initialState, action) => {
           } else return todo
         })
       }
-
+    case SET_LOADING:
+      return {
+        ...state,
+        isLoading: action.isLoading
+      }
     default:
       return state
   }
@@ -127,5 +131,6 @@ export const delTaskAC = (taskId, todoListId) => ({type: DEL_TASK, taskId, todoL
 export const delSelectedTaskAC = (todoListId) => ({type: DEL_SELECTED_TASK, todoListId})
 export const setTodoLists = (todoLists) => ({type: SET_TUDO_LISTS, todoLists})
 export const setTasks = (tasks, todoListId) => ({type: SET_TASKS, tasks, todoListId})
+export const setLoading = (isLoading) => ({type: SET_LOADING, isLoading})
 
 export default reducer

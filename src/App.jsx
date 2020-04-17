@@ -5,6 +5,7 @@ import AddNewItemForm from "./AddNewItemForm"
 import {connect} from "react-redux"
 import {addTodoListAC, delTodoListAC, restoreStateAC, setTodoLists} from "./reduser"
 import axios from 'axios'
+import Loading from "./Loading/Loading"
 
 class App extends React.Component {
   componentDidMount() {
@@ -59,12 +60,13 @@ class App extends React.Component {
       delTodoList={this.delTodoList}
     />)
     return (
+
       <div>
         <div>
           <AddNewItemForm addItem={this.addTodoList}/>
         </div>
         <div className="App">
-          {todoLists}
+          {(this.props.isLoading && <Loading/>) || todoLists}
         </div>
       </div>
     )
@@ -74,8 +76,8 @@ class App extends React.Component {
 const mapStateToProps = (state) => {
   return {
     todoLists: state.todoLists,
-    nextTodoListId: state.nextTodoListId
-  }
+    isLoading: state.isLoading
+   }
 }
 const mapDispatchToProps = (dispatch) => {
   return {

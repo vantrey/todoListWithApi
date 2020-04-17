@@ -43,10 +43,12 @@ class TodoListFooter extends React.Component {
           <button onClick={this.onActiveFilterClick} className={classForActive}>
             Active
           </button>
-          <button onClick={this.onDelClick}>Delete completed</button>
+          <button onClick={this.onDelClick}>
+            Delete completed
+          </button>
         </div>
         }
-        <div>
+        <div className='showMenu'>
           {this.state.isHidden && <span onClick={this.onShowFiltersClick}>show</span>}
           {!this.state.isHidden && <span onClick={this.onHideFiltersClick}>hide</span>}
         </div>
