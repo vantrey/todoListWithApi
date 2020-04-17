@@ -114,9 +114,9 @@ class TodoList extends React.Component {
             changeStatus={this.changeStatus}
             tasks={tasks.filter(t => {
               if (this.state.filterValue === 'Active') {
-                return !t.isDone
+                return t.status === 0
               } else if (this.state.filterValue === 'Completed') {
-                return t.isDone
+                return t.status === 2
               } else if (this.state.filterValue === 'All') {
                 return true
               }
