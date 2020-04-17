@@ -81,23 +81,7 @@ const mapStateToProps = (state) => {
     isLoading: state.isLoading
   }
 }
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addTodoList: (newTodoList) => {
-      const action = addTodoListAC(newTodoList)
-      dispatch(action)
-    },
-    delTodoList: (todoListId) => {
-      dispatch(delTodoListAC(todoListId))
-    },
-    /*    restoreState: () => {
-          dispatch(restoreStateAC())
-        },*/
-    setTodoLists: (todoLists) => {
-      dispatch(setTodoLists(todoLists))
-    }
-  }
-}
+
 const ConnectedApp = connect(mapStateToProps, {
   addTodoList, delTodoList, setTodoLists
 })(App)
