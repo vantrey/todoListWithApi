@@ -3,7 +3,7 @@ import './App.css';
 import TodoList from "./TodoList"
 import AddNewItemForm from "./AddNewItemForm"
 import {connect} from "react-redux"
-import {addTodoListAC, delTodoListAC, restoreStateAC, setTodoLists} from "./reduser"
+import {addTodoList, delTodoList, setTodoLists} from "./reduser"
 import axios from 'axios'
 import Loading from "./Loading/Loading"
 
@@ -33,7 +33,9 @@ class App extends React.Component {
         this.props.addTodoList(todoList)
       }
     })
-      .catch(error => {console.log(error)})
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   delTodoList = (todoListId) => {
@@ -77,7 +79,7 @@ const mapStateToProps = (state) => {
   return {
     todoLists: state.todoLists,
     isLoading: state.isLoading
-   }
+  }
 }
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -96,7 +98,9 @@ const mapDispatchToProps = (dispatch) => {
     }
   }
 }
-const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
+const ConnectedApp = connect(mapStateToProps, {
+  addTodoList, delTodoList, setTodoLists
+})(App)
 export default ConnectedApp
 
 

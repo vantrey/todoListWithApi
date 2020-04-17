@@ -121,14 +121,14 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-export const addTodoListAC = (newTodoList) => ({type: ADD_TODO_LIST, newTodoList})
-export const delTodoListAC = (todoListId) => ({type: DEL_TODO_LIST, todoListId})
-// export const restoreStateAC = () => ({type: RESTORE_STATE})
+export const addTodoList = (newTodoList) => ({type: ADD_TODO_LIST, newTodoList})
+export const delTodoList = (todoListId) => ({type: DEL_TODO_LIST, todoListId})
+// export const restoreState = () => ({type: RESTORE_STATE})
 
-export const addTaskAC = (newTask, todoListId) => ({type: ADD_TASK, newTask, todoListId})
-export const changeTaskAC = (task, todoListId) => ({type: CHANGE_TASK, task, todoListId})
-export const delTaskAC = (taskId, todoListId) => ({type: DEL_TASK, taskId, todoListId})
-export const delSelectedTaskAC = (todoListId) => ({type: DEL_SELECTED_TASK, todoListId})
+export const addTask = (newTask, todoListId) => ({type: ADD_TASK, newTask, todoListId})
+export const changeTask = (task, todoListId) => ({type: CHANGE_TASK, task, todoListId})
+export const delTask = (taskId, todoListId) => ({type: DEL_TASK, taskId, todoListId})
+export const delSelectedTask = (todoListId) => ({type: DEL_SELECTED_TASK, todoListId})
 export const setTodoLists = (todoLists) => ({type: SET_TUDO_LISTS, todoLists})
 export const setTasks = (tasks, todoListId) => ({type: SET_TASKS, tasks, todoListId})
 export const setLoading = (isLoading) => ({type: SET_LOADING, isLoading})

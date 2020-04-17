@@ -7,11 +7,16 @@ import TodoListTitle from "./TodoListTitle"
 import {connect} from "react-redux"
 import Button from "./Button/Button"
 import axios from 'axios'
-import {addTaskAC, changeTaskAC, delSelectedTaskAC, delTaskAC, setLoading, setTasks} from "./reduser"
-
+import {
+  addTask,
+  changeTask,
+  delSelectedTask,
+  delTask,
+  setLoading,
+  setTasks
+} from "./reduser"
 
 class TodoList extends React.Component {
-
   componentDidMount() {
     this.restoreState()
   }
@@ -63,7 +68,7 @@ class TodoList extends React.Component {
     }
     this.props.tasks.forEach(t => {
       if (t.status === 2) {
-        delTasksFromServer(t.id).then(()=> this.props.setLoading(false))
+        delTasksFromServer(t.id).then(() => this.props.setLoading(false))
       }
     })
   }
@@ -143,27 +148,8 @@ class TodoList extends React.Component {
 const mapStateToProps = (state) => {
   return {}
 }
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addTask: (newTask, todoListId) => {
-      dispatch(addTaskAC(newTask, todoListId))
-    },
-    changeTask: (task, todoListId) => {
-      dispatch(changeTaskAC(task, todoListId))
-    },
-    delTask: (taskId, todoListId) => {
-      dispatch(delTaskAC(taskId, todoListId))
-    },
-    delSelectedTask: (todoListId) => {
-      dispatch(delSelectedTaskAC(todoListId))
-    },
-    setTasks: (tasks, todoListId) => {
-      dispatch(setTasks(tasks, todoListId))
-    },
-    setLoading: (isLoading) => {
-      dispatch(setLoading(isLoading))
-    }
-  }
-}
-export default connect(null, mapDispatchToProps)(TodoList);
+
+export default connect(null, {
+  addTask, changeTask, delTask, delSelectedTask, setTasks, setLoading
+})(TodoList);
 
