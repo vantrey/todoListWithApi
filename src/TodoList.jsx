@@ -10,7 +10,7 @@ import axios from 'axios'
 import {
   addTask,
   changeTask,
-  delSelectedTask,
+  delSelectedTasks,
   delTask,
   setLoading,
   setTasks
@@ -56,20 +56,29 @@ class TodoList extends React.Component {
     this.setState({filterValue: newFilterValue}, () => {
     })
   }
-  delSelectedTask = () => {
+
+  delSelectedTasks = () => {
     this.props.setLoading(true)
-    let delTasksFromServer = (id) => {
+    let selectedTasksId = this.props.tasks.map(t => {
+      if (t.status === 2) return t.id
+    })
+    let delTasksFromServer = () => {
       return new Promise((resolve) => {
-        setTimeout(() => {
-          this.delTask(id)
-          resolve()
+        let i = 0
+        let stop = setInterval(() => {
+          if (i < selectedTasksId.length) {
+            this.delTask(selectedTasksId[i])
+            console.log(selectedTasksId[i])
+            i++
+          } else {
+            clearInterval(stop)
+            resolve()
+          }
         }, 2000)
       })
     }
-    this.props.tasks.forEach(t => {
-      if (t.status === 2) {
-        delTasksFromServer(t.id).then(() => this.props.setLoading(false))
-      }
+    delTasksFromServer().then(() => {
+      this.props.setLoading(false)
     })
   }
 
@@ -135,7 +144,7 @@ class TodoList extends React.Component {
               }
             })}/>
           <TodoListFooter
-            delSelectedTask={this.delSelectedTask}
+            delSelectedTasks={this.delSelectedTasks}
             changeFilter={this.changeFilter}
             filterValue={this.state.filterValue}
           />
@@ -150,6 +159,6 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(null, {
-  addTask, changeTask, delTask, delSelectedTask, setTasks, setLoading
+  addTask, changeTask, delTask, delSelectedTasks, setTasks, setLoading
 })(TodoList);
 

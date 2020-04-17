@@ -23,7 +23,7 @@ class TodoListFooter extends React.Component {
     this.props.changeFilter('Active')
   }
   onDelClick = () => {
-    this.props.delSelectedTask()
+    this.props.delSelectedTasks()
   }
 
   render = () => {

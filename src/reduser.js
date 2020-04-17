@@ -5,7 +5,7 @@ const DEL_TODO_LIST = 'TodoList/Reducer/DEL_TODO_LIST'
 const ADD_TASK = 'TodoList/Reducer/ADD_TASK'
 const CHANGE_TASK = 'TodoList/Reducer/CHANGE_TASK'
 const DEL_TASK = 'TodoList/Reducer/DEL_TASK'
-const DEL_SELECTED_TASK = 'TodoList/Reducer/DEL_SELECTED_TASK'
+const DEL_SELECTED_TASKS = 'TodoList/Reducer/DEL_SELECTED_TASKS'
 const RESTORE_STATE = 'TodoList/Reducer/RESTORE_STATE'
 const SET_TUDO_LISTS = 'TodoList/Reducer/SET_TUDO_LISTS'
 const SET_TASKS = 'TodoList/Reducer/SET_TASKS'
@@ -78,7 +78,7 @@ const reducer = (state = initialState, action) => {
       // repository.saveTodoLists(newState)
       return newState
     }
-    case DEL_SELECTED_TASK: {
+    case DEL_SELECTED_TASKS: {
       let newState = {
         ...state,
         todoLists: state.todoLists.map(todo => {
@@ -128,7 +128,7 @@ export const delTodoList = (todoListId) => ({type: DEL_TODO_LIST, todoListId})
 export const addTask = (newTask, todoListId) => ({type: ADD_TASK, newTask, todoListId})
 export const changeTask = (task, todoListId) => ({type: CHANGE_TASK, task, todoListId})
 export const delTask = (taskId, todoListId) => ({type: DEL_TASK, taskId, todoListId})
-export const delSelectedTask = (todoListId) => ({type: DEL_SELECTED_TASK, todoListId})
+export const delSelectedTasks = (todoListId) => ({type: DEL_SELECTED_TASKS, todoListId})
 export const setTodoLists = (todoLists) => ({type: SET_TUDO_LISTS, todoLists})
 export const setTasks = (tasks, todoListId) => ({type: SET_TASKS, tasks, todoListId})
 export const setLoading = (isLoading) => ({type: SET_LOADING, isLoading})
