@@ -6,7 +6,6 @@ import TodoListFooter from "./TodoListFooter";
 import TodoListTitle from "./TodoListTitle"
 import {connect} from "react-redux"
 import Button from "./Button/Button"
-import axios from 'axios'
 import {
   addTask,
   changeTask,
