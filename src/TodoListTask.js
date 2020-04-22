@@ -5,14 +5,14 @@ import Button from "./Button/Button"
 class TodoListTask extends React.Component {
   state = {
     editMode: false,
-    title: ''
+    title: this.props.task.title
   }
   activateEditMode = () => {
     this.setState({editMode: true})
   }
   deactivateEditMod = () => {
     this.props.changeTaskTitle(this.props.task, this.state.title)
-    this.setState({editMode: false, title: ''})
+    this.setState({editMode: false})
   }
   onIsDoneChanged = (e) => {
     let status = e.currentTarget.checked ? 2 : 0

@@ -6,6 +6,7 @@ import {connect} from "react-redux"
 import {addTodoList, delTodoList, setTodoLists} from "./reduser"
 import axios from 'axios'
 import Loading from "./Loading/Loading"
+import {api} from "./api"
 
 class App extends React.Component {
   componentDidMount() {
@@ -13,39 +14,27 @@ class App extends React.Component {
   }
 
   restoreState() {
-    let pr = axios.get("https://social-network.samuraijs.com/api/1.1/todo-lists", {withCredentials: true})
-    pr.then(res => {
-      this.props.setTodoLists(res.data)
-    })
+    api.getTodoLists()
+      .then(res => {
+        this.props.setTodoLists(res.data)
+      })
   }
 
   addTodoList = (newTitleText) => {
-    axios.post(
-      'https://social-network.samuraijs.com/api/1.1/todo-lists',
-      {title: newTitleText},
-      {
-        withCredentials: true,
-        headers: {'API-KEY': 'bf825c9a-985b-4152-9f7d-ce82a9632e5e'}
-      }
-    ).then(res => {
-      if (res.data.resultCode === 0) {
-        let todoList = res.data.data.item
-        this.props.addTodoList(todoList)
-      }
-    })
+    api.addTodoList(newTitleText)
+      .then(res => {
+        if (res.data.resultCode === 0) {
+          let todoList = res.data.data.item
+          this.props.addTodoList(todoList)
+        }
+      })
       .catch(error => {
         console.log(error)
       })
   }
 
   delTodoList = (todoListId) => {
-    axios.delete(
-      `https://social-network.samuraijs.com/api/1.1/todo-lists/${todoListId}`,
-      {
-        withCredentials: true,
-        headers: {'API-KEY': 'bf825c9a-985b-4152-9f7d-ce82a9632e5e'}
-      }
-    )
+    api.delTodoList(todoListId)
       .then(res => {
         if (res.data.resultCode === 0) {
           this.props.delTodoList(todoListId)
@@ -62,7 +51,6 @@ class App extends React.Component {
       delTodoList={this.delTodoList}
     />)
     return (
-
       <div>
         <div>
           <AddNewItemForm addItem={this.addTodoList}/>

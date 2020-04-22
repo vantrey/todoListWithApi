@@ -13,8 +13,9 @@ import {
   delSelectedTasks,
   delTask,
   setLoading,
-  setTasks
+  setTasks, setTodoListTitle
 } from "./reduser"
+import {api} from "./api"
 
 class TodoList extends React.Component {
   componentDidMount() {
@@ -26,25 +27,14 @@ class TodoList extends React.Component {
   }
 
   restoreState = () => {
-    axios.get(`https://social-network.samuraijs.com/api/1.1/todo-lists/${this.props.todoListId}/tasks`,
-      {
-        withCredentials: true,
-        headers: {'API-KEY': 'bf825c9a-985b-4152-9f7d-ce82a9632e5e'}
-      })
+    api.getTasks(this.props.todoListId)
       .then(res => {
         this.props.setTasks(res.data.items, this.props.todoListId)
       })
   }
 
   addTask = (newTitleText) => {
-    axios.post(
-      `https://social-network.samuraijs.com/api/1.1/todo-lists/${this.props.todoListId}/tasks`,
-      {title: newTitleText},
-      {
-        withCredentials: true,
-        headers: {'API-KEY': 'bf825c9a-985b-4152-9f7d-ce82a9632e5e'}
-      }
-    )
+    api.createTask(newTitleText, this.props.todoListId)
       .then(res => {
         if (res.data.resultCode === 0) {
           let task = res.data.data.item
@@ -83,17 +73,12 @@ class TodoList extends React.Component {
   }
 
   delTask = (taskId) => {
-    axios.delete(
-      `https://social-network.samuraijs.com/api/1.1/todo-lists/${this.props.todoListId}/tasks/${taskId}`,
-      {
-        withCredentials: true,
-        headers: {'API-KEY': 'bf825c9a-985b-4152-9f7d-ce82a9632e5e'}
-      }
-    ).then(res => {
-      if (res.data.resultCode === 0) {
-        this.props.delTask(taskId, this.props.todoListId)
-      }
-    })
+    api.delTask(this.props.todoListId, taskId)
+      .then(res => {
+        if (res.data.resultCode === 0) {
+          this.props.delTask(taskId, this.props.todoListId)
+        }
+      })
       .catch((error) => console.log(error))
   }
   changeStatus = (task, status) => {
@@ -103,19 +88,22 @@ class TodoList extends React.Component {
     this.changeTask(task, {title: title})
   }
   changeTask = (task, obj) => {
-    axios.put(
-      `https://social-network.samuraijs.com/api/1.1/todo-lists/${this.props.todoListId}/tasks/${task.id}`,
-      {...task, ...obj},
-      {
-        withCredentials: true,
-        headers: {'API-KEY': 'bf825c9a-985b-4152-9f7d-ce82a9632e5e'}
-      }
-    )
+    api.changeTask({...task, ...obj})
       .then(res => {
+
         if (res.data.resultCode === 0) {
-          this.props.changeTask(res.data.data.item, this.props.todoListId)
+          this.props.changeTask(res.data.data.item)
         }
       })
+  }
+
+  setTodoListTitle = (newTitle) => {
+    api.setTodoListTitle(this.props.todoListId, newTitle)
+      .then(
+        response => {
+          console.log(response)
+          this.props.setTodoListTitle(this.props.todoListId, newTitle)
+        })
   }
 
   render = () => {
@@ -124,7 +112,7 @@ class TodoList extends React.Component {
       <div className="App">
         <div className="todoList">
           <div className='todoListTitleWrap'>
-            <TodoListTitle title={this.props.title}/>
+            <TodoListTitle setTodoListTitle={this.setTodoListTitle} title={this.props.title}/>
             <div className="TodoListDelBtn">
               <Button id={this.props.todoListId} f={this.props.delTodoList} btnName={`X`}/>
             </div>
@@ -159,6 +147,6 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(null, {
-  addTask, changeTask, delTask, delSelectedTasks, setTasks, setLoading
+  addTask, changeTask, delTask, delSelectedTasks, setTasks, setLoading, setTodoListTitle
 })(TodoList);
 

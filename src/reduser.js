@@ -10,6 +10,7 @@ const RESTORE_STATE = 'TodoList/Reducer/RESTORE_STATE'
 const SET_TUDO_LISTS = 'TodoList/Reducer/SET_TUDO_LISTS'
 const SET_TASKS = 'TodoList/Reducer/SET_TASKS'
 const SET_LOADING = 'TodoList/Reducer/SET_LOADING'
+const SET_TODO_LIST_TITLE = 'TodoList/Reducer/SET_TODO_LIST_TITLE'
 
 const initialState = {
   todoLists: [],
@@ -52,7 +53,7 @@ const reducer = (state = initialState, action) => {
       let newState = {
         ...state,
         todoLists: state.todoLists.map(todo => {
-          if (todo.id === action.todoListId) {
+          if (todo.id === action.task.todoListId) {
             return {
               ...todo, tasks: todo.tasks.map(t => {
                 if (t.id === action.task.id) {
@@ -116,6 +117,15 @@ const reducer = (state = initialState, action) => {
         ...state,
         isLoading: action.isLoading
       }
+    case SET_TODO_LIST_TITLE:
+      return {
+        ...state,
+        todoLists: state.todoLists.map(todo => {
+          if (todo.id === action.todoListId) {
+            return {...todo, title: action.title}
+          } else return todo
+        })
+      }
     default:
       return state
   }
@@ -126,11 +136,12 @@ export const delTodoList = (todoListId) => ({type: DEL_TODO_LIST, todoListId})
 // export const restoreState = () => ({type: RESTORE_STATE})
 
 export const addTask = (newTask, todoListId) => ({type: ADD_TASK, newTask, todoListId})
-export const changeTask = (task, todoListId) => ({type: CHANGE_TASK, task, todoListId})
+export const changeTask = (task) => ({type: CHANGE_TASK, task})
 export const delTask = (taskId, todoListId) => ({type: DEL_TASK, taskId, todoListId})
 export const delSelectedTasks = (todoListId) => ({type: DEL_SELECTED_TASKS, todoListId})
 export const setTodoLists = (todoLists) => ({type: SET_TUDO_LISTS, todoLists})
 export const setTasks = (tasks, todoListId) => ({type: SET_TASKS, tasks, todoListId})
 export const setLoading = (isLoading) => ({type: SET_LOADING, isLoading})
+export const setTodoListTitle = (todoListId, title) => ({type: SET_TODO_LIST_TITLE, todoListId, title})
 
 export default reducer
