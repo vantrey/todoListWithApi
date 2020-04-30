@@ -30,7 +30,6 @@ export const api = {
     return instance.get(`/${todoListId}/tasks`)
   },
   delTask(todoListId, taskId) {
-    debugger
     return instance.delete(
       `/${todoListId}/tasks/${taskId}`)
   },
