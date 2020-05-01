@@ -38,7 +38,13 @@ class TodoList extends React.Component {
   }
 
   delSelectedTasks = () => {
-    this.props.setLoading(true)
+
+    this.props.tasks.forEach((t) => {
+      if (t.status === 2) {
+        this.delTask(t.id)
+      }
+    })
+    /*this.props.setLoading(true)
     let selectedTasksIds = this.props.tasks.map(t => {
       if (t.status === 2) return t.id
     })
@@ -59,11 +65,11 @@ class TodoList extends React.Component {
     }
     delTasksFromServer().then(() => {
       this.props.setLoading(false)
-    })
+    })*/
   }
 
   delTask = (taskId) => {
-   this.props.delTask(this.props.todoListId, taskId)
+    this.props.delTask(this.props.todoListId, taskId)
   }
   changeStatus = (task, status) => {
     this.changeTask(task, {status: status})
@@ -72,7 +78,7 @@ class TodoList extends React.Component {
     this.changeTask(task, {title: title})
   }
   changeTask = (task, obj) => {
-this.props.changeTask({...task, ...obj})
+    this.props.changeTask({...task, ...obj})
   }
 
   setTodoListTitle = (newTitle) => {
