@@ -3,10 +3,8 @@ import './App.css';
 import TodoList from "./TodoList"
 import AddNewItemForm from "./AddNewItemForm"
 import {connect} from "react-redux"
-import {addTodoList, delTodoList, setTodoLists} from "./reduser"
-import axios from 'axios'
+import {addTodoList, delTodoList, getTodoLists} from "./reduser"
 import Loading from "./Loading/Loading"
-import {api} from "./api"
 
 class App extends React.Component {
   componentDidMount() {
@@ -14,32 +12,15 @@ class App extends React.Component {
   }
 
   restoreState() {
-    api.getTodoLists()
-      .then(res => {
-        this.props.setTodoLists(res.data)
-      })
+    this.props.getTodoLists()
   }
 
   addTodoList = (newTitleText) => {
-    api.addTodoList(newTitleText)
-      .then(res => {
-        if (res.data.resultCode === 0) {
-          let todoList = res.data.data.item
-          this.props.addTodoList(todoList)
-        }
-      })
-      .catch(error => {
-        console.log(error)
-      })
+   this.props.addTodoList(newTitleText)
   }
 
   delTodoList = (todoListId) => {
-    api.delTodoList(todoListId)
-      .then(res => {
-        if (res.data.resultCode === 0) {
-          this.props.delTodoList(todoListId)
-        }
-      })
+    this.props.delTodoList(todoListId)
   }
 
   render = () => {
@@ -65,13 +46,13 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    todoLists: state.todoLists,
-    isLoading: state.isLoading
+    todoLists: state.todoListApp.todoLists,
+    isLoading: state.todoListApp.isLoading
   }
 }
 
 const ConnectedApp = connect(mapStateToProps, {
-  addTodoList, delTodoList, setTodoLists
+  addTodoList, delTodoList, getTodoLists
 })(App)
 export default ConnectedApp
 

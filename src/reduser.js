@@ -1,16 +1,16 @@
-import {repository} from "./repository"
+import {api} from "./api"
 
-const ADD_TODO_LIST = 'TodoList/Reducer/ADD_TODO_LIST'
-const DEL_TODO_LIST = 'TodoList/Reducer/DEL_TODO_LIST'
-const ADD_TASK = 'TodoList/Reducer/ADD_TASK'
-const CHANGE_TASK = 'TodoList/Reducer/CHANGE_TASK'
-const DEL_TASK = 'TodoList/Reducer/DEL_TASK'
+const ADD_TODO_LIST_SUCCESS = 'TodoList/Reducer/ADD_TODO_LIST_SUCCESS'
+const DEL_TODO_LIST_SUCCESS = 'TodoList/Reducer/DEL_TODO_LIST_SUCCESS'
+const ADD_TASK_SUCCESS = 'TodoList/Reducer/ADD_TASK_SUCCESS'
+const CHANGE_TASK_SUCCESS = 'TodoList/Reducer/CHANGE_TASK_SUCCESS'
+const DEL_TASK_SUCCESS = 'TodoList/Reducer/DEL_TASK_SUCCESS'
 const DEL_SELECTED_TASKS = 'TodoList/Reducer/DEL_SELECTED_TASKS'
 const RESTORE_STATE = 'TodoList/Reducer/RESTORE_STATE'
-const SET_TUDO_LISTS = 'TodoList/Reducer/SET_TUDO_LISTS'
-const SET_TASKS = 'TodoList/Reducer/SET_TASKS'
+const GET_TODO_LISTS_SUCCESS = 'TodoList/Reducer/GET_TODO_LISTS_SUCCESS' // setTodoList
+const GET_TASKS_SUCCESS = 'TodoList/Reducer/GET_TASKS_SUCCESS' // setTask
 const SET_LOADING = 'TodoList/Reducer/SET_LOADING'
-const SET_TODO_LIST_TITLE = 'TodoList/Reducer/SET_TODO_LIST_TITLE'
+const SET_TODO_LIST_TITLE_SUCCESS = 'TodoList/Reducer/SET_TODO_LIST_TITLE_SUCCESS'
 
 const initialState = {
   todoLists: [],
@@ -19,38 +19,32 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_TODO_LIST: {
-      let newState = {
+    case ADD_TODO_LIST_SUCCESS: {
+      return {
         ...state,
         todoLists: [...state.todoLists, action.newTodoList],
       }
-      // repository.saveTodoLists(newState)
-      return newState
     }
-    case DEL_TODO_LIST: {
-      let newState = {
+    case DEL_TODO_LIST_SUCCESS: {
+      return {
         ...state, todoLists: state.todoLists.filter(todo => {
           return action.todoListId !== todo.id
         })
       }
-      // repository.saveTodoLists(newState)
-      return newState
     }
-    case ADD_TASK: {
-      let newState = {
+    case ADD_TASK_SUCCESS: {
+      return {
         ...state, todoLists: state.todoLists.map(todo => {
-          if (todo.id === action.todoListId) {
+          if (todo.id === action.newTask.todoListId) {
             return {...todo, tasks: [...todo.tasks, action.newTask]}
           } else {
             return todo
           }
         })
       }
-      // repository.saveTodoLists(newState)
-      return newState
     }
-    case CHANGE_TASK: {
-      let newState = {
+    case CHANGE_TASK_SUCCESS: {
+      return {
         ...state,
         todoLists: state.todoLists.map(todo => {
           if (todo.id === action.task.todoListId) {
@@ -64,11 +58,9 @@ const reducer = (state = initialState, action) => {
           } else return todo
         })
       }
-      // repository.saveTodoLists(newState)
-      return newState
     }
-    case DEL_TASK: {
-      let newState = {
+    case DEL_TASK_SUCCESS: {
+      return {
         ...state,
         todoLists: state.todoLists.map(todo => {
           if (todo.id === action.todoListId) {
@@ -76,11 +68,9 @@ const reducer = (state = initialState, action) => {
           } else return todo
         })
       }
-      // repository.saveTodoLists(newState)
-      return newState
     }
     case DEL_SELECTED_TASKS: {
-      let newState = {
+      return {
         ...state,
         todoLists: state.todoLists.map(todo => {
           if (todo.id === action.todoListId) {
@@ -88,27 +78,19 @@ const reducer = (state = initialState, action) => {
           } else return todo
         })
       }
-      // repository.saveTodoLists(newState)
-      return newState
     }
-    /*case RESTORE_STATE: {
-      let restoredState = repository.getTodoLists()
-      if (restoredState != null) {
-        return restoredState
-      } else return state
-    }*/
-    case SET_TUDO_LISTS: {
+    case GET_TODO_LISTS_SUCCESS: {
       return {
         ...state,
         todoLists: action.todoLists.map(todo => ({...todo, tasks: []}))
       }
     }
-    case SET_TASKS:
+    case GET_TASKS_SUCCESS:
       return {
         ...state,
         todoLists: state.todoLists.map(todo => {
           if (todo.id === action.todoListId) {
-            return { ...todo, tasks: action.tasks}
+            return {...todo, tasks: action.tasks}
           } else return todo
         })
       }
@@ -117,7 +99,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         isLoading: action.isLoading
       }
-    case SET_TODO_LIST_TITLE:
+    case SET_TODO_LIST_TITLE_SUCCESS:
       return {
         ...state,
         todoLists: state.todoLists.map(todo => {
@@ -131,17 +113,80 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-export const addTodoList = (newTodoList) => ({type: ADD_TODO_LIST, newTodoList})
-export const delTodoList = (todoListId) => ({type: DEL_TODO_LIST, todoListId})
-// export const restoreState = () => ({type: RESTORE_STATE})
-
-export const addTask = (newTask, todoListId) => ({type: ADD_TASK, newTask, todoListId})
-export const changeTask = (task) => ({type: CHANGE_TASK, task})
-export const delTask = (taskId, todoListId) => ({type: DEL_TASK, taskId, todoListId})
+const addTodoListSuccess = (newTodoList) => ({type: ADD_TODO_LIST_SUCCESS, newTodoList})
+const delTodoListSuccess = (todoListId) => ({type: DEL_TODO_LIST_SUCCESS, todoListId})
+const addTaskSuccess = (newTask) => ({type: ADD_TASK_SUCCESS, newTask})
+const changeTaskSuccess = (task) => ({type: CHANGE_TASK_SUCCESS, task})
+const delTaskSuccess = (taskId, todoListId) => ({type: DEL_TASK_SUCCESS, taskId, todoListId})
 export const delSelectedTasks = (todoListId) => ({type: DEL_SELECTED_TASKS, todoListId})
-export const setTodoLists = (todoLists) => ({type: SET_TUDO_LISTS, todoLists})
-export const setTasks = (tasks, todoListId) => ({type: SET_TASKS, tasks, todoListId})
+const getTodoListsSuccess = (todoLists) => ({type: GET_TODO_LISTS_SUCCESS, todoLists})
+const getTasksSuccess = (tasks, todoListId) => ({type: GET_TASKS_SUCCESS, tasks, todoListId})
 export const setLoading = (isLoading) => ({type: SET_LOADING, isLoading})
-export const setTodoListTitle = (todoListId, title) => ({type: SET_TODO_LIST_TITLE, todoListId, title})
+const setTodoListTitleSuccess = (todoListId, title) => (
+  {type: SET_TODO_LIST_TITLE_SUCCESS, todoListId, title}
+)
+
+export const getTodoLists = () => (dispatch, getState) => {
+  api.getTodoLists()
+    .then(res => {
+      dispatch(getTodoListsSuccess(res.data))
+    })
+}
+export const addTodoList = (newTitleText) => (dispatch, getState) => {
+  api.addTodoList(newTitleText)
+    .then(res => {
+      if (res.data.resultCode === 0) {
+        let todoList = res.data.data.item
+        dispatch(addTodoListSuccess(todoList))
+      }
+    })
+}
+export const delTodoList = (todoListId) => (dispatch, getState) => {
+  api.delTodoList(todoListId)
+    .then(res => {
+      if (res.data.resultCode === 0) {
+        dispatch(delTodoListSuccess(todoListId))
+      }
+    })
+}
+export const getTasks = (todoListId) => (dispatch, getState) => {
+  api.getTasks(todoListId)
+    .then(res => {
+      dispatch(getTasksSuccess(res.data.items, todoListId))
+    })
+}
+export const addTask = (newTitleText, todoListId) => (dispatch, getState) => {
+  api.createTask(newTitleText, todoListId)
+    .then(res => {
+      if (res.data.resultCode === 0) {
+        let task = res.data.data.item
+        dispatch(addTaskSuccess(task))
+      }
+    })
+}
+export const delTask = (todoListId, taskId) => (dispatch, getState) => {
+  api.delTask(todoListId, taskId)
+    .then(res => {
+      if (res.data.resultCode === 0) {
+        dispatch(delTaskSuccess(taskId, todoListId))
+      }
+    })
+}
+export const changeTask = (task) => (dispatch, getState) => {
+  api.changeTask(task)
+    .then(res => {
+      if (res.data.resultCode === 0) {
+        dispatch(changeTaskSuccess(res.data.data.item))
+      }
+    })
+}
+export const setTodoListTitle = (todoListId, newTitle) => (dispatch) => {
+  api.setTodoListTitle(todoListId, newTitle)
+    .then(
+      response => {
+        console.log(response)
+        dispatch(setTodoListTitleSuccess(todoListId, newTitle))
+      })
+}
 
 export default reducer

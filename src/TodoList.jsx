@@ -12,7 +12,7 @@ import {
   delSelectedTasks,
   delTask,
   setLoading,
-  setTasks, setTodoListTitle
+  getTasks, setTodoListTitle
 } from "./reduser"
 import {api} from "./api"
 
@@ -26,20 +26,11 @@ class TodoList extends React.Component {
   }
 
   restoreState = () => {
-    api.getTasks(this.props.todoListId)
-      .then(res => {
-        this.props.setTasks(res.data.items, this.props.todoListId)
-      })
+    this.props.getTasks(this.props.todoListId)
   }
 
   addTask = (newTitleText) => {
-    api.createTask(newTitleText, this.props.todoListId)
-      .then(res => {
-        if (res.data.resultCode === 0) {
-          let task = res.data.data.item
-          this.props.addTask(task, this.props.todoListId)
-        }
-      })
+    this.props.addTask(newTitleText, this.props.todoListId)
   }
   changeFilter = (newFilterValue) => {
     this.setState({filterValue: newFilterValue}, () => {
@@ -48,16 +39,16 @@ class TodoList extends React.Component {
 
   delSelectedTasks = () => {
     this.props.setLoading(true)
-    let selectedTasksId = this.props.tasks.map(t => {
+    let selectedTasksIds = this.props.tasks.map(t => {
       if (t.status === 2) return t.id
     })
     let delTasksFromServer = () => {
       return new Promise((resolve) => {
         let i = 0
         let stop = setInterval(() => {
-          if (i < selectedTasksId.length) {
-            this.delTask(selectedTasksId[i])
-            console.log(selectedTasksId[i])
+          if (i < selectedTasksIds.length) {
+            this.delTask(selectedTasksIds[i])
+            console.log(selectedTasksIds[i])
             i++
           } else {
             clearInterval(stop)
@@ -72,13 +63,7 @@ class TodoList extends React.Component {
   }
 
   delTask = (taskId) => {
-    api.delTask(this.props.todoListId, taskId)
-      .then(res => {
-        if (res.data.resultCode === 0) {
-          this.props.delTask(taskId, this.props.todoListId)
-        }
-      })
-      .catch((error) => console.log(error))
+   this.props.delTask(this.props.todoListId, taskId)
   }
   changeStatus = (task, status) => {
     this.changeTask(task, {status: status})
@@ -87,22 +72,11 @@ class TodoList extends React.Component {
     this.changeTask(task, {title: title})
   }
   changeTask = (task, obj) => {
-    api.changeTask({...task, ...obj})
-      .then(res => {
-
-        if (res.data.resultCode === 0) {
-          this.props.changeTask(res.data.data.item)
-        }
-      })
+this.props.changeTask({...task, ...obj})
   }
 
   setTodoListTitle = (newTitle) => {
-    api.setTodoListTitle(this.props.todoListId, newTitle)
-      .then(
-        response => {
-          console.log(response)
-          this.props.setTodoListTitle(this.props.todoListId, newTitle)
-        })
+    this.props.setTodoListTitle(this.props.todoListId, newTitle)
   }
 
   render = () => {
@@ -141,11 +115,7 @@ class TodoList extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {}
-}
-
 export default connect(null, {
-  addTask, changeTask, delTask, delSelectedTasks, setTasks, setLoading, setTodoListTitle
+  addTask, changeTask, delTask, delSelectedTasks, getTasks, setLoading, setTodoListTitle
 })(TodoList);
 
