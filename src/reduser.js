@@ -6,15 +6,15 @@ const ADD_TASK_SUCCESS = 'TodoList/Reducer/ADD_TASK_SUCCESS'
 const CHANGE_TASK_SUCCESS = 'TodoList/Reducer/CHANGE_TASK_SUCCESS'
 const DEL_TASK_SUCCESS = 'TodoList/Reducer/DEL_TASK_SUCCESS'
 const DEL_SELECTED_TASKS = 'TodoList/Reducer/DEL_SELECTED_TASKS'
-const RESTORE_STATE = 'TodoList/Reducer/RESTORE_STATE'
 const GET_TODO_LISTS_SUCCESS = 'TodoList/Reducer/GET_TODO_LISTS_SUCCESS' // setTodoList
 const GET_TASKS_SUCCESS = 'TodoList/Reducer/GET_TASKS_SUCCESS' // setTask
-const SET_LOADING = 'TodoList/Reducer/SET_LOADING'
+const SET_TODO_LISTS_LOADING = 'TodoList/Reducer/SET_TODO_LISTS_LOADING'
 const SET_TODO_LIST_TITLE_SUCCESS = 'TodoList/Reducer/SET_TODO_LIST_TITLE_SUCCESS'
+const SET_TASKS_LOADING = 'TodoList/Reducer/SET_TASKS_LOADING'
 
 const initialState = {
   todoLists: [],
-  isLoading: false,
+  isTodoListsLoading: false,
 }
 
 const reducer = (state = initialState, action) => {
@@ -79,12 +79,16 @@ const reducer = (state = initialState, action) => {
         })
       }
     }
-    case GET_TODO_LISTS_SUCCESS: {
+    case GET_TODO_LISTS_SUCCESS:
       return {
         ...state,
-        todoLists: action.todoLists.map(todo => ({...todo, tasks: []}))
+        todoLists: action.todoLists.map(todo => ({
+          ...todo,
+          isTasksLoading: false,
+          tasks: []
+        }))
       }
-    }
+
     case GET_TASKS_SUCCESS:
       return {
         ...state,
@@ -94,10 +98,19 @@ const reducer = (state = initialState, action) => {
           } else return todo
         })
       }
-    case SET_LOADING:
+    case SET_TODO_LISTS_LOADING:
       return {
         ...state,
-        isLoading: action.isLoading
+        isTodoListsLoading: action.isLoading
+      }
+    case SET_TASKS_LOADING:
+      return {
+        ...state,
+        todoLists: state.todoLists.map(todo => {
+          if (todo.id === action.todoListId) {
+            return {...todo, isTasksLoading: action.isLoading}
+          } else return todo
+        })
       }
     case SET_TODO_LIST_TITLE_SUCCESS:
       return {
@@ -118,18 +131,19 @@ const delTodoListSuccess = (todoListId) => ({type: DEL_TODO_LIST_SUCCESS, todoLi
 const addTaskSuccess = (newTask) => ({type: ADD_TASK_SUCCESS, newTask})
 const changeTaskSuccess = (task) => ({type: CHANGE_TASK_SUCCESS, task})
 const delTaskSuccess = (taskId, todoListId) => ({type: DEL_TASK_SUCCESS, taskId, todoListId})
-export const delSelectedTasks = (todoListId) => ({type: DEL_SELECTED_TASKS, todoListId})
 const getTodoListsSuccess = (todoLists) => ({type: GET_TODO_LISTS_SUCCESS, todoLists})
 const getTasksSuccess = (tasks, todoListId) => ({type: GET_TASKS_SUCCESS, tasks, todoListId})
-export const setLoading = (isLoading) => ({type: SET_LOADING, isLoading})
-const setTodoListTitleSuccess = (todoListId, title) => (
-  {type: SET_TODO_LIST_TITLE_SUCCESS, todoListId, title}
-)
+const setTodoListTitleSuccess = (todoListId, title) => ({type: SET_TODO_LIST_TITLE_SUCCESS, todoListId, title})
+export const delSelectedTasks = (todoListId) => ({type: DEL_SELECTED_TASKS, todoListId})
+const setTodoListsLoading = (isLoading) => ({type: SET_TODO_LISTS_LOADING, isLoading})
+const setTasksLoading = (todoListId, isLoading) => ({type: SET_TASKS_LOADING, todoListId, isLoading})
 
 export const getTodoLists = () => (dispatch, getState) => {
+  dispatch(setTodoListsLoading(true))
   api.getTodoLists()
     .then(res => {
       dispatch(getTodoListsSuccess(res.data))
+      dispatch(setTodoListsLoading(false))
     })
 }
 export const addTodoList = (newTitleText) => (dispatch, getState) => {
@@ -150,9 +164,11 @@ export const delTodoList = (todoListId) => (dispatch, getState) => {
     })
 }
 export const getTasks = (todoListId) => (dispatch, getState) => {
+  dispatch(setTasksLoading(todoListId, true))
   api.getTasks(todoListId)
     .then(res => {
       dispatch(getTasksSuccess(res.data.items, todoListId))
+      dispatch(setTasksLoading(todoListId, false))
     })
 }
 export const addTask = (newTitleText, todoListId) => (dispatch, getState) => {

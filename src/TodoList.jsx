@@ -11,7 +11,6 @@ import {
   changeTask,
   delSelectedTasks,
   delTask,
-  setLoading,
   getTasks, setTodoListTitle
 } from "./reduser"
 import {api} from "./api"
@@ -38,7 +37,6 @@ class TodoList extends React.Component {
   }
 
   delSelectedTasks = () => {
-
     this.props.tasks.forEach((t) => {
       if (t.status === 2) {
         this.delTask(t.id)
@@ -97,19 +95,22 @@ class TodoList extends React.Component {
             </div>
           </div>
           <AddNewItemForm addItem={this.addTask}/>
-          <TodoListTasks
-            delTask={this.delTask}
-            changeTaskTitle={this.changeTaskTitle}
-            changeStatus={this.changeStatus}
-            tasks={tasks.filter(t => {
-              if (this.state.filterValue === 'Active') {
-                return t.status === 0
-              } else if (this.state.filterValue === 'Completed') {
-                return t.status === 2
-              } else if (this.state.filterValue === 'All') {
-                return true
-              }
-            })}/>
+          {
+            this.props.isTasksLoading ? <span>...Loading</span> :
+              <TodoListTasks
+                delTask={this.delTask}
+                changeTaskTitle={this.changeTaskTitle}
+                changeStatus={this.changeStatus}
+                tasks={tasks.filter(t => {
+                  if (this.state.filterValue === 'Active') {
+                    return t.status === 0
+                  } else if (this.state.filterValue === 'Completed') {
+                    return t.status === 2
+                  } else if (this.state.filterValue === 'All') {
+                    return true
+                  }
+                })}/>
+          }
           <TodoListFooter
             delSelectedTasks={this.delSelectedTasks}
             changeFilter={this.changeFilter}
@@ -122,6 +123,6 @@ class TodoList extends React.Component {
 }
 
 export default connect(null, {
-  addTask, changeTask, delTask, delSelectedTasks, getTasks, setLoading, setTodoListTitle
+  addTask, changeTask, delTask, delSelectedTasks, getTasks, setTodoListTitle
 })(TodoList);
 

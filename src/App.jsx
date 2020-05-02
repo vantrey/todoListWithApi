@@ -29,6 +29,7 @@ class App extends React.Component {
       todoListId={tl.id}
       title={tl.title}
       tasks={tl.tasks}
+      isTasksLoading={tl.isTasksLoading}
       delTodoList={this.delTodoList}
     />)
     return (
@@ -37,7 +38,7 @@ class App extends React.Component {
           <AddNewItemForm addItem={this.addTodoList}/>
         </div>
         <div className="App">
-          {(this.props.isLoading && <Loading/>) || todoLists}
+          {(this.props.isTodoListsLoading && <Loading/>) || todoLists}
         </div>
       </div>
     )
@@ -47,7 +48,7 @@ class App extends React.Component {
 const mapStateToProps = (state) => {
   return {
     todoLists: state.todoListApp.todoLists,
-    isLoading: state.todoListApp.isLoading
+    isTodoListsLoading: state.todoListApp.isTodoListsLoading
   }
 }
 
