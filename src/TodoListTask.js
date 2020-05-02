@@ -43,7 +43,8 @@ class TodoListTask extends React.Component {
       <div className={classForTask}>
         <input type={'checkbox'}
                checked={this.props.task.status === 2}
-               onChange={this.onIsDoneChanged}/>
+               onChange={this.onIsDoneChanged}
+        />
         {this.state.editMode
           ? <input
             autoFocus={true}
