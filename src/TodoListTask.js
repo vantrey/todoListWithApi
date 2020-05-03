@@ -44,6 +44,7 @@ class TodoListTask extends React.Component {
         <input type={'checkbox'}
                checked={this.props.task.status === 2}
                onChange={this.onIsDoneChanged}
+               disabled={this.props.task.isStatusLoading}
         />
         {this.state.editMode
           ? <input
