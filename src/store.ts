@@ -5,7 +5,11 @@ import thunk from 'redux-thunk'
 const reducers = combineReducers({
 todoListApp: reducer
 })
+ type ReducerType = typeof reducers
+export type AppStateType = ReturnType<ReducerType>
 
 const store = createStore(reducers, applyMiddleware(thunk))
-window.store = store
+
+// @ts-ignore
+window.store  = store
 export default store

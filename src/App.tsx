@@ -5,8 +5,21 @@ import AddNewItemForm from "./AddNewItemForm"
 import {connect} from "react-redux"
 import {addTodoList, delTodoList, getTodoLists} from "./reduser"
 import Loading from "./Loading/Loading"
+import {TodoType} from "./types/entities";
+import {AppStateType} from "./store";
 
-class App extends React.Component {
+type MapStatePropsType = {
+  todoLists: Array<TodoType>,
+  isTodoListsLoading: boolean
+}
+type MapDispatchPropsType = {
+  addTodoList: (newTitleText: string) => void
+  delTodoList: (todoListId: string) => void
+  getTodoLists: () => void
+}
+type PropsType = MapStatePropsType & MapDispatchPropsType
+
+class App extends React.Component<PropsType> {
   componentDidMount() {
     this.restoreState()
   }
@@ -15,11 +28,11 @@ class App extends React.Component {
     this.props.getTodoLists()
   }
 
-  addTodoList = (newTitleText) => {
-   this.props.addTodoList(newTitleText)
+  addTodoList = (newTitleText: string) => {
+    this.props.addTodoList(newTitleText)
   }
 
-  delTodoList = (todoListId) => {
+  delTodoList = (todoListId: string) => {
     this.props.delTodoList(todoListId)
   }
 
@@ -45,14 +58,14 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: AppStateType): MapStatePropsType => {
   return {
     todoLists: state.todoListApp.todoLists,
     isTodoListsLoading: state.todoListApp.isTodoListsLoading
   }
 }
 
-const ConnectedApp = connect(mapStateToProps, {
+const ConnectedApp = connect<MapStatePropsType, MapDispatchPropsType, {}, AppStateType>(mapStateToProps, {
   addTodoList, delTodoList, getTodoLists
 })(App)
 export default ConnectedApp
