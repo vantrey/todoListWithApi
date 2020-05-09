@@ -1,7 +1,14 @@
 import React from 'react';
 import styles from './Button.module.css'
+import {string} from "prop-types"
 
-class Button extends React.Component {
+type OwnPropsType = {
+  id: string
+  f: (f: string) => void
+  btnName: string
+}
+
+class Button extends React.Component<OwnPropsType> {
 
   onClick = () => {
     this.props.f(this.props.id)

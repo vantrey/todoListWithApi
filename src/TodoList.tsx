@@ -74,7 +74,7 @@ class TodoList extends React.Component<PropsType, StateType> {
   changeTaskTitle = (task: TaskType, title: string) => {
     this.changeTask(task, {title: title})
   }
-  changeTask = (task: TaskType, obj: {status?: number, title?: string}) => { //??
+  changeTask = (task: TaskType, obj: {status?: number, title?: string}) => {
     this.props.changeTask({...task, ...obj})
   }
 
@@ -83,7 +83,7 @@ class TodoList extends React.Component<PropsType, StateType> {
   }
 
   render = () => {
-    let {tasks = []} = this.props
+    //let {tasks = []} = this.props
     return (
       <div className="App">
         <div className="todoList">
@@ -100,7 +100,7 @@ class TodoList extends React.Component<PropsType, StateType> {
                 delTask={this.delTask}
                 changeTaskTitle={this.changeTaskTitle}
                 changeStatus={this.changeStatus}
-                tasks={tasks.filter(t => {
+                tasks={this.props.tasks.filter(t => {
                   if (this.state.filterValue === 'Active') {
                     return t.status === 0
                   } else if (this.state.filterValue === 'Completed') {

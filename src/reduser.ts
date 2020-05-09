@@ -32,7 +32,7 @@ const reducer = (state: InitialStateType = initialState, action: TodoActionTypes
     case ADD_TODO_LIST_SUCCESS: {
       return {
         ...state,
-        todoLists: [...state.todoLists, action.newTodoList],
+        todoLists: [...state.todoLists, {...action.newTodoList, tasks: []}],
       }
     }
     case DEL_TODO_LIST_SUCCESS: {
@@ -91,14 +91,14 @@ const reducer = (state: InitialStateType = initialState, action: TodoActionTypes
     case GET_TODO_LISTS_SUCCESS:
       return {
         ...state,
-        todoLists: action.todoLists.map((todo:TodoType) => {
-          debugger
+        todoLists: action.todoLists.map((todo) => {
           return {
             ...todo,
-            tasks: []
+            tasks: [],
+
           }
         })
-      }
+      }     //??
 
     case GET_TASKS_SUCCESS:
       return {
@@ -271,6 +271,7 @@ const setIsStatusLoading = (task: TaskType, isStatusLoading: boolean): SetIsStat
 })
 
 // thunks
+// dispatch thunk without thunk inside
 export const getTodoLists = () => (dispatch: Dispatch<TodoActionTypes>, getState: () => AppStateType) => {
   dispatch(setTodoListsLoading(true))
   api.getTodoLists()
@@ -278,9 +279,9 @@ export const getTodoLists = () => (dispatch: Dispatch<TodoActionTypes>, getState
       dispatch(getTodoListsSuccess(res.data))
       dispatch(setTodoListsLoading(false))
     })
-}    // dispath thunk without thunk inside
-
-type ThunkType = ThunkAction<void, AppStateType, unknown, TodoActionTypes> // dispath thunk if need thunk inside
+}
+// dispatch thunk if need thunk inside
+type ThunkType = ThunkAction<void, AppStateType, unknown, TodoActionTypes>
 type DispatchType = ThunkDispatch<AppStateType, unknown, TodoActionTypes>
 
 export const addTodoList = (newTitleText: string): ThunkType =>
@@ -289,6 +290,7 @@ export const addTodoList = (newTitleText: string): ThunkType =>
       .then(res => {
         if (res.data.resultCode === 0) {
           let todoList = res.data.data.item
+          console.log(res.data.data.item)
           dispatch(addTodoListSuccess(todoList))
         }
       })
@@ -306,12 +308,7 @@ export const getTasks = (todoListId: string): ThunkType => (dispatch: DispatchTy
   dispatch(setTasksLoading(todoListId, true))
   api.getTasks(todoListId)
     .then(res => {
-
-      let cb = (t: TaskType): TaskType => {
-        return {...t, isStatusLoading: false}
-      }
-      let newArray = res.data.items.map(cb)
-      dispatch(getTasksSuccess(newArray, todoListId)) //??
+      dispatch(getTasksSuccess(res.data.items.map(t => ({...t})), todoListId)) //??
       dispatch(setTasksLoading(todoListId, false))
       console.log(res.data.items)
     })

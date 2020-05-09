@@ -1,8 +1,20 @@
 import React from 'react';
 import PropType from 'prop-types';
 import Button from "./Button/Button"
+import {TaskType} from "./types/entities";
 
-class TodoListTask extends React.Component {
+type StateType = {
+  editMode: boolean,
+  title: string
+}
+type OwnPropType = {
+  delTask: (taskId: string) => void
+  changeTaskTitle: (task: TaskType, title: string) => void
+  changeStatus: (task: TaskType, status: number) => void
+  task: TaskType
+}
+
+class TodoListTask extends React.Component<OwnPropType, StateType> {
   state = {
     editMode: false,
     title: this.props.task.title
@@ -11,18 +23,20 @@ class TodoListTask extends React.Component {
     this.setState({editMode: true})
   }
   deactivateEditMod = () => {
-    this.props.changeTaskTitle(this.props.task, this.state.title)
-    this.setState({editMode: false})
+    if (this.state.title) {
+      this.props.changeTaskTitle(this.props.task, this.state.title)
+      this.setState({editMode: false})
+    }
   }
-  onIsDoneChanged = (e) => {
+  onIsDoneChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     let status = e.currentTarget.checked ? 2 : 0
     this.props.changeStatus(this.props.task, status)
   }
-  onTitleChanged = (e) => {
+  onTitleChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({title: e.currentTarget.value})
   }
 
-  transformPriority = (priority) => {
+  transformPriority = (priority: number) => {
     switch (priority) {
       case 0:
         return 'low'
@@ -39,6 +53,7 @@ class TodoListTask extends React.Component {
 
   render = () => {
     let classForTask = this.props.task.status === 2 ? 'todoList-task done' : 'todoList-task'
+    let classForEditMode = this.state.title ? '' : 'error'
     return (
       <div className={classForTask}>
         <input type={'checkbox'}
@@ -47,11 +62,11 @@ class TodoListTask extends React.Component {
                disabled={this.props.task.isStatusLoading}
         />
         {this.state.editMode
-          ? <input
-            autoFocus={true}
-            value={this.state.title}
-            onBlur={this.deactivateEditMod}
-            onChange={this.onTitleChanged}
+          ? <input className={classForEditMode}
+                   autoFocus={true}
+                   value={this.state.title}
+                   onBlur={this.deactivateEditMod}
+                   onChange={this.onTitleChanged}
           />
           : <span onClick={this.activateEditMode}>
         {/*{this.props.task.id}*/} - {this.props.task.title} -
@@ -66,9 +81,3 @@ class TodoListTask extends React.Component {
 }
 
 export default TodoListTask;
-
-TodoListTask.propTypes = {
-  title: PropType.string,
-  isDone: PropType.bool,
-  priority: PropType.string,
-}
