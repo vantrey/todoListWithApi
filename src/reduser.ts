@@ -95,10 +95,9 @@ const reducer = (state: InitialStateType = initialState, action: TodoActionTypes
           return {
             ...todo,
             tasks: [],
-
           }
         })
-      }     //??
+      }
 
     case GET_TASKS_SUCCESS:
       return {
@@ -272,80 +271,95 @@ const setIsStatusLoading = (task: TaskType, isStatusLoading: boolean): SetIsStat
 
 // thunks
 // dispatch thunk without thunk inside
-export const getTodoLists = () => (dispatch: Dispatch<TodoActionTypes>, getState: () => AppStateType) => {
+export const getTodoLists = () => async (dispatch: Dispatch<TodoActionTypes>, getState: () => AppStateType) => {
   dispatch(setTodoListsLoading(true))
-  api.getTodoLists()
-    .then(res => {
-      dispatch(getTodoListsSuccess(res.data))
-      dispatch(setTodoListsLoading(false))
-    })
+  try {
+    let res = await api.getTodoLists()
+    dispatch(getTodoListsSuccess(res.data))
+    dispatch(setTodoListsLoading(false))
+  } catch (e) {
+    console.error('error:', {...e})
+    dispatch(setTodoListsLoading(false))
+  }
+
 }
 // dispatch thunk if need thunk inside
 type ThunkType = ThunkAction<void, AppStateType, unknown, TodoActionTypes>
 type DispatchType = ThunkDispatch<AppStateType, unknown, TodoActionTypes>
 
 export const addTodoList = (newTitleText: string): ThunkType =>
-  (dispatch: DispatchType, getState: () => AppStateType) => {
-    api.addTodoList(newTitleText)
-      .then(res => {
-        if (res.data.resultCode === 0) {
-          let todoList = res.data.data.item
-          console.log(res.data.data.item)
-          dispatch(addTodoListSuccess(todoList))
-        }
-      })
+  async (dispatch: DispatchType, getState: () => AppStateType) => {
+    try {
+      let res = await api.addTodoList(newTitleText)
+      if (res.data.resultCode === 0) {
+        let todoList = res.data.data.item
+        dispatch(addTodoListSuccess(todoList))
+      }
+    } catch (e) {
+      console.error('error:', {...e})
+    }
   }
 export const delTodoList = (todoListId: string): ThunkType =>
-  (dispatch: DispatchType, getState: () => AppStateType) => {
-    api.delTodoList(todoListId)
-      .then(res => {
-        if (res.data.resultCode === 0) {
-          dispatch(delTodoListSuccess(todoListId))
-        }
-      })
+  async (dispatch: DispatchType, getState: () => AppStateType) => {
+    try {
+      let res = await api.delTodoList(todoListId)
+      if (res.data.resultCode === 0) {
+        dispatch(delTodoListSuccess(todoListId))
+      }
+    } catch (e) {
+      console.error('error:', {...e})
+    }
   }
-export const getTasks = (todoListId: string): ThunkType => (dispatch: DispatchType) => {
+export const getTasks = (todoListId: string): ThunkType => async (dispatch: DispatchType) => {
   dispatch(setTasksLoading(todoListId, true))
-  api.getTasks(todoListId)
-    .then(res => {
-      dispatch(getTasksSuccess(res.data.items.map(t => ({...t})), todoListId)) //??
-      dispatch(setTasksLoading(todoListId, false))
-      console.log(res.data.items)
-    })
+  try {
+    let res = await api.getTasks(todoListId)
+    dispatch(getTasksSuccess(res.data.items.map(t => ({...t})), todoListId)) //??
+    dispatch(setTasksLoading(todoListId, false))
+    console.log(res.data.items)
+  } catch (e) {
+    console.error('error:', {...e})
+  }
 }
-export const addTask = (newTitleText: string, todoListId: string): ThunkType => (dispatch: DispatchType) => {
-  api.createTask(newTitleText, todoListId)
-    .then(res => {
-      if (res.data.resultCode === 0) {
-        let task = res.data.data.item
-        dispatch(addTaskSuccess(task))
-      }
-    })
+export const addTask = (newTitleText: string, todoListId: string): ThunkType => async (dispatch: DispatchType) => {
+  try {
+    let res = await api.createTask(newTitleText, todoListId)
+    if (res.data.resultCode === 0) {
+      let task = res.data.data.item
+      dispatch(addTaskSuccess(task))
+    }
+  } catch (e) {
+    console.error('error:', {...e})
+  }
 }
-export const delTask = (todoListId: string, taskId: string): ThunkType => (dispatch: DispatchType) => {
-  api.delTask(todoListId, taskId)
-    .then(res => {
-      if (res.data.resultCode === 0) {
-        dispatch(delTaskSuccess(taskId, todoListId))
-      }
-    })
+export const delTask = (todoListId: string, taskId: string): ThunkType => async (dispatch: DispatchType) => {
+  try {
+    let res = await api.delTask(todoListId, taskId)
+    if (res.data.resultCode === 0) {
+      dispatch(delTaskSuccess(taskId, todoListId))
+    }
+  } catch (e) {
+    console.error('error:', {...e})
+  }
 }
-export const changeTask = (task: TaskType): ThunkType => (dispatch: DispatchType) => {
+export const changeTask = (task: TaskType): ThunkType => async (dispatch: DispatchType) => {
   dispatch(setIsStatusLoading(task, true))
-  api.changeTask(task)
-    .then(res => {
-      if (res.data.resultCode === 0) {
-        dispatch(changeTaskSuccess(res.data.data.item))
-        dispatch(setIsStatusLoading(task, false))
-      }
-    })
+  try {
+    let res = await api.changeTask(task)
+    if (res.data.resultCode === 0) {
+      dispatch(changeTaskSuccess(res.data.data.item))
+      dispatch(setIsStatusLoading(task, false))
+    }
+  } catch (e) {
+    console.error('error:', {...e})
+  }
 }
-export const setTodoListTitle = (todoListId: string, newTitle: string) => (dispatch: DispatchType) => {
+
+export const setTodoListTitle = (todoListId: string, newTitle: string) => async (dispatch: DispatchType) => {
   api.setTodoListTitle(todoListId, newTitle)
-    .then(
-      response => {
-        dispatch(setTodoListTitleSuccess(todoListId, newTitle))
-      })
+    .then(() => {
+      dispatch(setTodoListTitleSuccess(todoListId, newTitle))
+    })
 }
 
 export default reducer
