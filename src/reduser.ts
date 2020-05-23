@@ -314,7 +314,7 @@ export const getTasks = (todoListId: string): ThunkType => async (dispatch: Disp
   dispatch(setTasksLoading(todoListId, true))
   try {
     let res = await api.getTasks(todoListId)
-    dispatch(getTasksSuccess(res.data.items.map(t => ({...t})), todoListId)) //??
+    dispatch(getTasksSuccess(res.data.items.map(t => ({...t})), todoListId))
     dispatch(setTasksLoading(todoListId, false))
     console.log(res.data.items)
   } catch (e) {
@@ -355,7 +355,7 @@ export const changeTask = (task: TaskType): ThunkType => async (dispatch: Dispat
   }
 }
 
-export const setTodoListTitle = (todoListId: string, newTitle: string) => async (dispatch: DispatchType) => {
+export const setTodoListTitle = (todoListId: string, newTitle: string) => (dispatch: DispatchType) => {
   api.setTodoListTitle(todoListId, newTitle)
     .then(() => {
       dispatch(setTodoListTitleSuccess(todoListId, newTitle))
